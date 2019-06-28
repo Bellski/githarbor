@@ -1,0 +1,15 @@
+<div tabindex="0"
+     style="position: absolute; display: none; z-index: 99999;"
+     class="is-primary-background has-round-borders has-borders is-unselectable is-no-outline"
+>
+    <ul class="g-list">
+        <li v-if="action.visible"
+            :key="index"
+            v-for="(Action action, index) in actions"
+            class="is-background-6-hoverable"
+            @click="onClick(action)"
+        >
+            {{action.name}}
+        </li>
+    </ul>
+</div>

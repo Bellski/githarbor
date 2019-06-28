@@ -1,0 +1,92 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.window.codesearch.item.MatchLine"/>
+
+<el-dialog top="0"
+           :visible="true"
+           width="70%"
+           :modal="false"
+           class="el-is-body-padingless el-is-shadowless el-is-has-borders is-height-80p is-flex-centered g-code-search"
+           :close-on-click-modal="false"
+           @close="onClose">
+
+    <span slot="title">{{directory}}</span>
+
+    <div class="is-flex is-full-size is-vertical">
+        <el-input v-model="input"
+                  placeholder="Search"
+                  class="is-borderless"
+                  ref="inputElement"
+                  maxlength="120"
+                  show-word-limit
+        >
+            <el-select v-model="extension" slot="prepend">
+                <el-option
+                        v-for="Extension extension in extensions"
+                        :key="extension.name"
+                        :label="extension.label"
+                        :value="extension.name">
+                </el-option>
+            </el-select>
+            <span slot="suffix">
+                <fa-icon icon="search"></fa-icon>
+            </span>
+        </el-input>
+
+        <div v-if="nothingToShow" class="is-flex-grow has-top-border is-flex is-centered is-color-3">
+            Nothing to show
+        </div>
+
+        <div v-if="searching" class="is-flex-grow has-top-border is-flex is-vertical">
+            <loader text="Searching..."></loader>
+        </div>
+
+        <div v-if="visibleResult" class="is-flex-grow has-top-border is-flex is-vertical">
+            <div style="height: 30%; display: flex">
+                <simple-bar class="is-full-size">
+                    <ul class="g-list is-mini is-unselectable">
+                        <li :key="index"
+                            v-for="(MatchLine matchLine, index) in matchLines"
+                            :class='map(e("is-background-color-6", matchLineIndex == index))'
+                            style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; position: relative"
+                            @click="onMatchLineSelect(index, matchLine)"
+                            @dblclick="onMatchLineDoubleClick(index, matchLine)"
+                        >
+                            <div class="is-inline">
+                                {{matchLine.content}}
+                            </div>
+
+                            <span class="is-color-3" style="position: absolute; top:0; right: 0.4rem;">
+                                {{matchLine.fileName}}:{{matchLine.line}}
+                            </span>
+                        </li>
+
+                        <li v-if="loadMore"
+                            :class='map(e("is-background-color-6", matchLineIndex == matchLines.length))'
+                            @click="onLoadMore"
+                        >
+                            <fa-icon v-if="loadingMore" icon="cog" spin></fa-icon>
+                            <span>
+                                Search more {{page}} / {{pages}}
+                            </span>
+                        </li>
+                    </ul>
+                </simple-bar>
+            </div>
+
+            <div class="is-padding has-top-border has-bottom-border is-primary-background" style="height: 28px">
+                {{currentMatchLine.filePath}}
+            </div>
+            <div class="flex-grow" style="height: 70%; width: 100%;">
+                <div class="is-full-size" ref="monacoContainer" :style='map(e("visibility", monacoContainerVisible ? "visible" : "hidden"))'>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="is-has-borders is-padding has-top-border is-primary-background">
+            Code Search API limit requests
+            <span v-if="queryLimitResetAt != null">
+                {{formattedRateLimit}}
+            </span>
+        </div>
+    </div>
+</el-dialog>

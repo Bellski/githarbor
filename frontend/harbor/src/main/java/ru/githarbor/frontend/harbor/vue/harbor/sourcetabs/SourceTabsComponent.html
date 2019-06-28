@@ -1,0 +1,24 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.data.SourceTab"/>
+
+<div class="is-full-height">
+
+    <template v-if="!switchingBranch">
+        <read-me v-if="showReadme"></read-me>
+
+        <el-tabs type="card"
+                 class="g-source-tabs"
+                 v-else
+                 v-model="activeTab"
+                 @tab-remove="onTabRemove"
+                 closable
+        >
+            <el-tab-pane v-for="SourceTab sourceTab in tabs"
+                         :key="sourceTab.key"
+                         :label="sourceTab.name"
+                         :name="sourceTab.key"
+            >
+                <source-view :source="sourceTab"></source-view>
+            </el-tab-pane>
+        </el-tabs>
+    </template>
+</div>

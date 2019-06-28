@@ -1,0 +1,40 @@
+<vue-gwt:import class="ru.githarbor.shared.RecentRepository"/>
+
+<div class="is-flex is-vertical is-full-size">
+
+    <div class="is-flex has-bottom-border">
+        <el-input v-model="input"
+                  placeholder="Search"
+                  class="is-borderless">
+
+            <fa-icon icon='search' slot="suffix"></fa-icon>
+
+        </el-input>
+    </div>
+
+    <loader v-if="loading"></loader>
+
+    <div class="is-flex is-full-size" v-else>
+        <ul class="g-list">
+            <li :key="repository.name" v-for="RecentRepository repository in repositories">
+                <div class="is-flex is-vertical-centered" style="padding-bottom: 3px;">
+                    <span class="title is-6 is-marginless">{{repository.name}}</span>
+                    <span class="is-margin-left">
+                        <span class="icon is-background-6-hoverable has-round-2x-border" @click="onNewWindow(repository.name)">
+                            <fa-icon icon='window-restore' class="is-color-4"></fa-icon>
+                        </span>
+                        <span class="icon is-background-6-hoverable has-round-2x-border" @click="onThisWindow(repository.name)">
+                            <fa-icon icon='window-maximize' class="is-color-4"></fa-icon>
+                        </span>
+                        <span class="icon is-background-6-hoverable has-round-2x-border" @click="onDelete(repository.name)">
+                            <fa-icon icon='times' class="is-color-4"></fa-icon>
+                        </span>
+                    </span>
+                </div>
+                <div style="padding-bottom: 5px;">{{formatDate(repository.date)}}
+
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

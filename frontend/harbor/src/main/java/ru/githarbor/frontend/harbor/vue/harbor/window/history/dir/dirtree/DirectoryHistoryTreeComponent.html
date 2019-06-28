@@ -1,0 +1,42 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.elementui.TreeNode"/>
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.window.history.dir.dirtree.data.Node"/>
+
+<div style="width: 100%; height: 100%">
+    <el-dialog v-if="visibleDiff"
+               top="0"
+               :visible="true"
+               width="99%"
+               :modal="false"
+               class="el-is-body-padingless el-is-shadowless el-is-has-borders is-height-99p is-flex-centered"
+               :close-on-click-modal="false"
+               @close="onDiffClose">
+
+        <span slot="title">{{commitFile.name}}</span>
+
+        <loader v-if="loadingDiff" text="Loading diff..."></loader>
+
+        <source-diff :data="diffData" v-else></source-diff>
+    </el-dialog>
+
+    <loader v-if="loading" text="Loading tree..."></loader>
+
+    <simple-bar style="width:100%; height:100%;" v-else>
+        <el-tree class="g-directory-history-tree"
+                 :data="commitFiles"
+                 :highlight-current="true"
+                 default-expand-all
+        >
+            <template slot-scope="{TreeNode node, Node data}">
+                <div v-if="!data.leaf" :class='map(e(data.asRootNode().name, true))'>
+                    {{data.asRootNode().name}}
+                </div>
+                <div @dblclick="onCommitFileDoubleClick(data)" v-else>
+                    <span :class='map(e(data.asFileNode().status, true))'>{{data.asFileNode().name}}</span>
+                    <span class="is-fontsize-medium is-color-3">
+                        {{data.asFileNode().path}}
+                    </span>
+                </div>
+            </template>
+        </el-tree>
+    </simple-bar>
+</div>

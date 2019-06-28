@@ -1,0 +1,272 @@
+.el-tabs.el-tabs--card {
+
+  & > .el-tabs__header {
+    background: $--background-color-base;
+    margin: 0;
+  }
+
+  & > .el-tabs__header .el-tabs__nav {
+    border: none;
+  }
+
+  .el-tabs__item {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 $g-horizontal-offset;
+    transition: unset;
+    font-size: $g-font-size;
+    font-weight: normal;
+
+    &:last-child {
+      padding-right: $g-horizontal-offset !important;
+      border-right: none;
+    }
+
+    &:nth-child(2) {
+      padding-left: $g-horizontal-offset !important;
+    }
+
+    &.is-active:last-child {
+      border-right: $g-border;
+    }
+
+    &.is-active {
+      background: $g-work-space-color;
+      color: inherit;
+
+      &.is-closable {
+        padding-left: $g-horizontal-offset !important;
+        padding-right: $g-horizontal-offset !important;
+      }
+    }
+
+    &:hover {
+      color: inherit;
+      padding-left: $g-horizontal-offset !important;
+      padding-right: $g-horizontal-offset !important;
+    }
+
+    .el-icon-close {
+      width: 14px;
+      color: $g-color-2;
+      top: -2px;
+
+      &:hover {
+        background-color: unset;
+        color: $g-color-1;
+      }
+    }
+  }
+}
+
+.el-input {
+
+  &.is-borderless {
+    .el-input__inner {
+      border: none;
+    }
+  }
+
+  .el-input-group__append,
+  .el-input-group__prepend {
+    border-radius: 0;
+    background: $g-work-space-color;
+  }
+
+  .el-input__inner {
+    padding: 0 $g-horizontal-offset;
+  }
+
+  &.el-input--mini {
+    .el-input__suffix {
+      display: flex;
+      align-items: center;
+      margin-right: $g-horizontal-offset;
+    }
+  }
+}
+
+.el-button {
+  cursor: default;
+
+  &:hover,
+  &:focus {
+    color: inherit;
+    background: inherit;
+  }
+
+  &:hover {
+    border-color: $g-border-hover-color;
+  }
+
+  &:focus {
+    border-color: $g-border-focus-color;
+  }
+
+
+  &.el-button--primary:hover,
+  &.el-button--primary:focus {
+    color: $--button-primary-font-color;
+    background: $--button-primary-background-color;
+  }
+
+  &.el-button--primary:hover {
+    border-color: $g-border-hover-color;
+  }
+
+  &.el-button--primary:focus {
+    border-color: $g-border-focus-color;
+  }
+}
+
+.el-select-dropdown {
+  transform-origin: unset !important;
+  transition: unset !important;
+  margin-top: 1px !important;
+
+  .el-select-dropdown__item {
+    cursor: default;
+    height: 22px;
+    line-height: 22px;
+
+    padding: 0 $g-horizontal-offset;
+  }
+}
+
+.el-select {
+  .el-input {
+    .el-select__caret {
+      cursor: default;
+    }
+  }
+
+  .el-input__inner {
+    cursor: default;
+  }
+}
+
+
+.el-popper[x-placement^="bottom"] .popper__arrow {
+  display: none;
+}
+
+.el-tree {
+  .el-tree-node__content {
+    @extend %no-select;
+    height: 22px;
+    cursor: default;
+  }
+}
+
+.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+  background-color: $g-hover-color;
+}
+
+.el-dialog__wrapper {
+
+  .el-dialog__headerbtn {
+    top: 2px;
+    right: 12px;
+  }
+
+  .el-dialog {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .el-dialog__body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    outline: 0;
+  }
+
+  .el-dialog__header {
+    padding: $g-vertical-offset $g-horizontal-offset;
+    background: $g-primary-color;
+    border-bottom: $g-border;
+  }
+
+  &.is-flex-centered {
+    display: flex;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+
+    .el-dialog {
+      margin: 0;
+    }
+  }
+
+  &.is-height-99p {
+    .el-dialog {
+      height: 99%;
+    }
+  }
+
+  &.is-height-80p {
+    .el-dialog {
+      height: 80%;
+    }
+  }
+
+  &.el-is-no-header {
+    .el-dialog {
+      .el-dialog__header {
+        display: none;
+      }
+    }
+  }
+
+  &.el-is-body-padingless {
+    .el-dialog {
+      .el-dialog__body {
+        padding: 0;
+      }
+    }
+  }
+
+  &.el-is-shadowless {
+    .el-dialog {
+      box-shadow: none;
+    }
+  }
+
+  &.el-is-has-borders {
+    .el-dialog {
+      border: $g-border;
+    }
+  }
+
+  .el-dialog__body {
+    font-size: $g-font-size;
+  }
+}
+
+.el-radio-group {
+  display: block;
+
+  &:first-child {
+    .el-radio-button__inner {
+      border: none;
+      border-radius: 0;
+
+      border-bottom: 1px solid transparent;
+    }
+  }
+
+  .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+    border-bottom-color: $g-work-space-color;
+  }
+
+  .el-radio-button__inner {
+    height: 28px;
+    line-height: 28px;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: unset;
+  }
+
+}
+
+

@@ -1,0 +1,27 @@
+<section class="hero is-fullheight is-full-height">
+    <component :is="window" v-bind="windowProps"></component>
+
+    <div class="is-flex is-vertical-centered is-padding has-bottom-border ">
+        <div>
+            <repository-info></repository-info>
+        </div>
+        <div class="is-flex-grow has-text-centered">
+            <repository-search></repository-search>
+        </div>
+        <div>
+
+        </div>
+    </div>
+
+    <div class="is-flex is-flex-grow">
+        <div style="width: 100%; height: 100%;">
+            <harbor-side-bar class="is-flex-grow"></harbor-side-bar>
+        </div>
+    </div>
+
+    <div class="is-flex is-centered has-top-border is-padding">
+        <div>GitHub API limit requests {{formattedRateLimit}}</div>
+        <div class="is-flex-grow"></div>
+        <div>Latest commit {{latestCommit}}</div>
+    </div>
+</section>

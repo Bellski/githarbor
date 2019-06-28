@@ -1,0 +1,4 @@
+{
+  "paths": [javaparser-maven-sample/src/main/java/com/yourorganization,javaparser-maven-sample/src/main/resources
+  ]
+}

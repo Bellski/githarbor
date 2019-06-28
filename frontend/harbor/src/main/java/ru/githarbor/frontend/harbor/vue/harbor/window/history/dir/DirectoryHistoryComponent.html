@@ -1,0 +1,28 @@
+<el-dialog top="0"
+           :visible="true"
+           width="98%"
+           :modal="false"
+           class="el-is-body-padingless el-is-shadowless el-is-has-borders is-height-99p is-flex-centered"
+           :close-on-click-modal="false"
+           @close="onClose">
+
+    <span slot="title">{{directory}}</span>
+
+    <split-panes @resized="onResized" watch-slots>
+        <commits-list :commits="commits"
+                      :load-more="loadMore"
+                      :loading-more="loadingMore"
+                      :splitpanes-size="listPane"
+                      @select="onCommitSelect"
+                      @load-more="onLoadMore"
+        >
+
+        </commits-list>
+        <directory-history-tree :directory="directory"
+                                :commit="commit"
+                                :splitpanes-size="diffPane"
+        >
+
+        </directory-history-tree>
+    </split-panes>
+</el-dialog>

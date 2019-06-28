@@ -1,0 +1,93 @@
+@mixin sidebar($primaryStyleName: g-sidebar) {
+  .#{$primaryStyleName} {
+    display: flex;
+    height: 100%;
+    flex-direction: row;
+
+    &.no-content {
+      .splitpanes {
+        .splitpanes__splitter {
+          display: none !important;
+        }
+      }
+    }
+
+    .#{$primaryStyleName}-header {
+      border-right: $g-border;
+
+      .#{$primaryStyleName}-header-tab-list {
+
+
+        > li:first-child {
+          border-bottom: none !important;
+        }
+
+        > .#{$primaryStyleName}-header-tab-item {
+          @extend %no-select;
+
+          &.g-tab-active {
+            &:after {
+              content: '';
+              position: absolute;
+              width: 1px;
+              height: 100%;
+              border-right: solid 1px $g-work-space-color;
+              bottom: 0;
+              left: -2px;
+            }
+
+            border-bottom: $g-border;
+            border-top: $g-border;
+            background-color: $g-work-space-color;
+            border-left-color: $g-work-space-color;
+          }
+
+          padding: $g-vertical-offset + 0.4 $g-horizontal-offset - 0.2;
+
+          border-top: solid 1px transparent;
+          border-bottom: solid 1px transparent;
+          border-left: 1px solid transparent;
+
+          writing-mode: vertical-rl;
+          transform: scale(-1, -1);
+        }
+      }
+    }
+
+    .#{$primaryStyleName}-content-container {
+      flex-grow: 1;
+
+      .splitpanes {
+        .splitpanes__splitter {
+          background: transparent;
+        }
+      }
+
+      .#{$primaryStyleName}-panes {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+
+        .#{$primaryStyleName}-pane {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          background-color: $g-work-space-color;
+          border-right: $g-border;
+
+          .g-recent-projects-toolbar {
+            padding-top: 1px;
+            padding-bottom: 1px;
+            background-color: $g-primary-color;
+            border-bottom: $g-border;
+          }
+        }
+      }
+
+      .#{$primaryStyleName}-content {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}

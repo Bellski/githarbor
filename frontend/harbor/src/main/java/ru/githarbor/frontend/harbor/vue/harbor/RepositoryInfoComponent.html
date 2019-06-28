@@ -1,0 +1,22 @@
+<ul class="g-repository-info g-list is-horizontal is-flex is-vertical-centered">
+    <li>
+        <span class="is-flex is-centered title is-6">
+            {{owner}} / {{name}}
+        </span>
+    </li>
+    <li>
+        <span class="icon is-small has-round-2x-border is-background-color-4">
+            <fa-icon icon='star' class="is-primary-color is-fontsize-medium"></fa-icon>
+            <span class="is-primary-color is-fontsize-medium" style="font-weight: 500;">
+                {{stars}}
+            </span>
+        </span>
+    </li>
+    <li>
+        <span class="icon is-small has-round-2x-border is-background-color-4 is-background-3-hoverable">
+            <a>
+                <fa-icon :icon='array("fab", "github")' class="is-primary-color"></fa-icon>
+            </a>
+        </span>
+    </li>
+</ul>

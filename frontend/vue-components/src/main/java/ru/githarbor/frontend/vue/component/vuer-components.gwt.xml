@@ -1,0 +1,8 @@
+<module>
+    <inherits name="elemental2.dom.Dom"/>
+    <inherits name="com.intendia.rxgwt2.RxElemental2" />
+    <inherits name="javax.inject.Inject"/>
+    <inherits name="dagger.Dagger"/>
+
+    <source path=""/>
+</module>

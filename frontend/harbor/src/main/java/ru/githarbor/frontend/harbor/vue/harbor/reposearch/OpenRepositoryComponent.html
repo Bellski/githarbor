@@ -1,0 +1,12 @@
+<el-popover placement="right"
+            trigger="click"
+            v-model="visible"
+            :popper-options='map(e("boundariesElement", "body"))'
+>
+        <span slot="reference"
+              class="title is-6 is-hoverable-link">{{name}}
+    </span>
+
+    <el-button type="primary" @click="onNewWindow">New Window</el-button>
+    <el-button class="is-marginless" @click="onThisWindow">This Window</el-button>
+</el-popover>

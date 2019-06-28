@@ -1,0 +1,11 @@
+
+
+.simplebar-placeholder { width: auto!important; }
+.simplebar-scrollbar:before {
+  background-color: $g-color-4;
+  border-radius: 0;
+}
+
+.simplebar-scrollbar {
+  width: 8px;
+}

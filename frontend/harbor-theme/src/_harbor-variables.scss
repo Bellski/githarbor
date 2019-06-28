@@ -1,0 +1,35 @@
+$g-primary-color: #F5F5F5 !default;
+$g-work-space-color: #FFFF !default;
+$g-select-color: #D8D8D8 !default;
+$g-hover-color: scale-color($g-work-space-color, $lightness: max(-100%, -100% * 0.05), $saturation: max(-100%, -50% * 0.05)) !default;
+
+$g-color-1: scale-color($g-primary-color, $lightness: max(-100%, -100% * 0.8), $saturation: max(-100%, -50% * 0.8)) !default;
+$g-color-2: scale-color($g-primary-color, $lightness: max(-100%, -100% * 0.6), $saturation: max(-100%, -50% * 0.6)) !default;
+$g-color-3: scale-color($g-primary-color, $lightness: max(-100%, -100% * 0.4), $saturation: max(-100%, -50% * 0.4)) !default;
+$g-color-4: scale-color($g-primary-color, $lightness: max(-100%, -100% * 0.2), $saturation: max(-100%, -50% * 0.2)) !default;
+$g-color-5: scale-color($g-primary-color, $lightness: max(-100%, -100% * 0.1), $saturation: max(-100%, -50% * 0.1)) !default;
+$g-color-6: scale-color($g-primary-color, $lightness: max(-100%, -100% * 0.05), $saturation: max(-100%, -50% * 0.05)) !default;
+
+/** Borders
+------------------------------------------- */
+$g-border-primary-color: $g-color-5;
+$g-border-hover-color: $g-color-4 !default;
+$g-border-focus-color: $g-color-4 !default;
+
+$g-border: 1px solid $g-border-primary-color;
+$g-border-hover: 1px solid $g-border-hover-color;
+$g-border-focus: 1px solid $g-border-focus-color;
+
+/** Font
+---------------------------------------------- */
+$g-font-size: 0.75rem;
+$g-font-size-title-6: 0.8125rem;
+$g-font-size-title-5: 0.9375rem;
+$g-font-size-title-4: 1.0625rem;
+
+/** Layout
+-------------------------------------------- */
+$g-horizontal-offset: 0.4375rem !default;
+$g-vertical-offset: 0.25rem !default;
+
+

@@ -1,0 +1,14 @@
+<section class="hero is-fullheight">
+    <div class="hero-body is-flex is-vertical is-centered">
+        <template v-if="!notFound">
+            <fa-icon icon="spinner" spin size="2x"></fa-icon>
+            <div class="title is-5">{{info}}</div>
+        </template>
+        <template v-else>
+            <span class="title is-5">
+                Repository not found
+            </span>
+        </template>
+    </div>
+
+</section>

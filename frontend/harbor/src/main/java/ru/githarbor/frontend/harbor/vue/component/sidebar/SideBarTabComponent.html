@@ -1,0 +1,7 @@
+<li :class='map(e("g-sidebar-header-tab-item", true), e("g-tab-active", isActive))' @click="handleTabClick">
+    <fa-icon v-if="hasIconPrefix" :icon="iconWithPrefix" flip="vertical"></fa-icon>
+    <fa-icon :icon="iconWithoutPrefix" flip="vertical" v-else></fa-icon>
+    <span>
+        {{title}}
+    </span>
+</li>

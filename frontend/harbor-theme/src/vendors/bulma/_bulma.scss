@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+.box {
+  box-shadow: none;
+  border: 1px solid $border;
+  border-radius: $radius-small;
+}
+
+.icon {
+  height: 1.3rem;
+  width: 1.3rem;
+}

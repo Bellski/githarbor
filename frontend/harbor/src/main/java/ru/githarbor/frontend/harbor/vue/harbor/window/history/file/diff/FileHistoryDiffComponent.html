@@ -1,0 +1,5 @@
+<div style="width: 100%; height: 100%">
+    <loader v-if="loadingDiff" text="Loading diff..."></loader>
+
+    <source-diff :data="diffData" v-else></source-diff>
+</div>

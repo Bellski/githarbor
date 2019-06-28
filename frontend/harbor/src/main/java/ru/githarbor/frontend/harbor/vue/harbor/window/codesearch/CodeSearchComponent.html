@@ -1,0 +1,70 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.window.codesearch.Extension"/>
+
+<el-dialog top="0"
+           :visible="true"
+           width="70%"
+           :modal="false"
+           class="el-is-body-padingless el-is-shadowless el-is-has-borders is-height-80p is-flex-centered g-code-search"
+           :close-on-click-modal="false"
+           @close="onClose">
+
+    <span slot="title">{{directory}}</span>
+
+    <div class="is-flex is-full-size is-vertical">
+
+        <el-input v-model="input"
+                  placeholder="Search"
+                  class="is-borderless"
+                  ref="inputElement"
+        >
+            <el-select v-model="extension" slot="prepend">
+                <el-option
+                        v-for="Extension extension in extensions"
+                        :key="extension.name"
+                        :label="extension.label"
+                        :value="extension.name">
+                </el-option>
+            </el-select>
+            <span slot="suffix">
+                <fa-icon icon="search"></fa-icon>
+                <span v-if="found > 0">
+                    {{found}}
+                </span>
+            </span>
+        </el-input>
+
+        <div class="is-flex-grow has-top-border is-flex">
+            <loader v-if="searching" text="Searching..."></loader>
+            <div v-if="!searching && found == 0" class="is-flex is-centered is-full-size">
+                <span class="is-color-4">Nothing to show</span>
+            </div>
+            <div v-if="!searching && found > 0" style="width: 100%; height: 100%;">
+                <split-panes watch-slots
+                             @resized="onSplitPanesResized"
+                >
+                    <code-search-item-list :items="items"
+                                           :load-more="loadMore"
+                                           :loading-more="loadingMore"
+                                           @load-more="onLoadMore"
+                                           @item-select="onItemSelect"
+                                           :splitpanes-size="leftPaneWidth"
+                    ></code-search-item-list>
+                    <code-search-item-view ref="codeSearchItemViewComponent"
+                                           :item="item"
+                                           :query="input"
+                                           :splitpanes-size="rightPaneWidth"
+                    >
+
+                    </code-search-item-view>
+                </split-panes>
+            </div>
+        </div>
+
+        <div class="is-has-borders is-padding has-top-border is-primary-background">
+            Code Search API limit requests
+            <span v-if="queryLimitResetAt != null">
+                {{formattedRateLimit}}
+            </span>
+        </div>
+    </div>
+</el-dialog>

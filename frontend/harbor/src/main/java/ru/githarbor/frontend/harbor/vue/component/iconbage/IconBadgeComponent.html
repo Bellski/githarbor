@@ -1,0 +1,16 @@
+<span :class='map(e("g-icon-badge-empty", text == null), e("g-icon-badge", true), e("g-icon-badge-hoverable", isHoverable))'>
+
+    <template v-if="isAnchor">
+        <a :href="href" target="_blank">
+            <fa-icon v-if="hasPrefix" :icon='array(prefix, icon)'></fa-icon>
+            <fa-icon v-else :icon='icon'></fa-icon>
+             <span class="g-icon-badge-text">{{text}}</span>
+        </a>
+    </template>
+
+    <template v-else>
+        <fa-icon v-if="hasPrefix" :icon='array(prefix, icon)'></fa-icon>
+        <fa-icon v-else :icon='icon'></fa-icon>
+        <span class="g-icon-badge-text">{{text}}</span>
+    </template>
+</span>

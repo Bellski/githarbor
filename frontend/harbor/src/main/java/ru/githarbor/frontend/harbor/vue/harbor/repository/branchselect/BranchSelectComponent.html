@@ -1,0 +1,16 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.repository.branchselect.BranchOption"/>
+
+<el-select v-model="branch"
+           :loading="fetching"
+           loading-text="loading"
+           @change="onBranchChange"
+>
+
+    <el-option v-for="BranchOption option in branchOptions"
+               value-key="name"
+               :key="option.name"
+               :label="option.name"
+               :value="option.name"
+    >
+    </el-option>
+</el-select>

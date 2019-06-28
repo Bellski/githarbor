@@ -1,0 +1,30 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.core.github.request.CommitsRequest.Node"/>
+
+<div style="width: 100%; height: 100%">
+    <loader v-if="commits.length == 0" text="Loading commits..."></loader>
+
+    <simple-bar style="width: 100%; height: 100%" v-else>
+        <ul class="g-list is-unselectable">
+            <li :key="node.oid" v-for="(Node node, index) in commits"
+                @click="onCommitClick(index, node)"
+                :class='map(e("is-background-color-6", index == commitIndex))'
+            >
+                <div class="is-font-weight-700">{{node.message}}</div>
+                <div class="is-fontsize-medium">
+                    <span class="is-font-weight-600">{{node.getCommitter()}}</span>
+                    <span>
+                        {{node.getDate()}}
+                    </span>
+                </div>
+            </li>
+
+            <li v-if="loadMore"
+                :class='map(e("is-background-color-6", commits.length == commitIndex))'
+                @click="onLoadMore"
+            >
+                <loader v-if="loadingMore" class="is-inline"></loader>
+                Load more...
+            </li>
+        </ul>
+    </simple-bar>
+</div>

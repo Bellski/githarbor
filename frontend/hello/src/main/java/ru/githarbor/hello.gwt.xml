@@ -1,0 +1,17 @@
+<module rename-to="hello">
+    <inherits name="com.google.gwt.user.User"/>
+    <inherits name="elemental2.dom.Dom"/>
+    <inherits name='com.axellience.vuegwt.VueGWT'/>
+    <inherits name="com.intendia.rxgwt2.RxElemental2"/>
+    <inherits name="javax.inject.Inject"/>
+    <inherits name="dagger.Dagger"/>
+    <inherits name="ru.githarbor.frontend.github.github-requests"/>
+    <inherits name="ru.githarbor.frontend.vue.component.vuer-components"/>
+
+    <source path="frontend/hello"/>
+    <source path="shared"/>
+
+    <entry-point class="ru.githarbor.frontend.hello.HelloEntryPoint"/>
+
+    <set-property name="user.agent" value="safari"/>
+</module>

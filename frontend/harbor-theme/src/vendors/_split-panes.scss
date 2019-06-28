@@ -1,0 +1,33 @@
+.splitpanes__pane {
+  flex-grow: 1;
+  display: flex;
+  height: auto;
+}
+
+.splitpanes__splitter {
+  background-color: $g-border-primary-color;
+  position: relative;
+}
+
+
+.splitpanes__splitter:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity 0.4s;
+  background-color: $g-border-primary-color;
+  opacity: 0;
+  z-index: 1;
+}
+
+.splitpanes--vertical >.splitpanes__splitter {
+  cursor: w-resize;
+}
+
+.splitpanes--vertical > .splitpanes__splitter:before {
+  left: 0;right: -6px;height: 100%;
+}
+.splitpanes--horizontal > .splitpanes__splitter:before {
+  top: -6px;bottom: -6px;width: 100%;
+}

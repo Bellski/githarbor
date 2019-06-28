@@ -1,0 +1,50 @@
+$--font-size-base: $g-font-size;
+$--background-color-base: $g-primary-color;
+$--border-color-hover: $g-border-hover-color;
+$--input-focus-border: $g-border-focus-color;
+$--border-color-base: $g-border-primary-color;
+$--border-radius-base: 2px;
+$--color-primary: $g-color-1;
+
+$--box-shadow-light:none;
+
+/* Popover
+-------------------------- */
+$--popover-background-color: $g-primary-color;
+$--popover-border-color: $g-border-primary-color;
+$--popover-arrow-size: 4px !default;
+$--popover-padding: $g-vertical-offset $g-horizontal-offset;
+
+/* Button
+-------------------------- */
+$--button-font-weight: normal;
+
+$--button-mini-font-size: $g-font-size;
+$--button-mini-padding-vertical: $g-vertical-offset;
+$--button-mini-padding-horizontal: $g-horizontal-offset;
+$--button-default-background-color: $g-primary-color;
+$--button-primary-border-color: $g-border-primary-color;
+$--button-primary-font-color: $g-color-1;
+$--button-primary-background-color: $g-work-space-color;
+
+$--tree-node-hover-background-color: transparent;
+
+/* Select
+-------------------------- */
+$--select-dropdown-border: $g-border;
+$--select-input-focus-border-color: $--input-focus-border;
+$--select-input-font-size: $g-font-size;
+$--select-option-selected-font-color: $g-color-1;
+
+/* Radio
+------------------------------- */
+$--select-group-color: $g-work-space-color;
+$--select-option-selected-font-color: $g-color-1;
+$--select-option-selected-hover: $g-primary-color;
+$--radio-button-checked-background-color: $g-work-space-color;
+$--radio-button-checked-font-color: $g-color-1;
+$--radio-button-checked-border-color: transparent;
+
+/* Dialog
+------------------------------- */
+$--dialog-font-size: $g-font-size;

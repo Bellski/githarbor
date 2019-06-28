@@ -1,0 +1,17 @@
+<side-bar @splitter-moved="handleMoved">
+    <side-bar-pane :title="name" :icon='array("box")'>
+        <repository-tree></repository-tree>
+    </side-bar-pane>
+    <side-bar-pane :title="owner" :icon='array("fab", "github-alt")'>
+        <owner-repositories></owner-repositories>
+    </side-bar-pane>
+    <side-bar-pane title="Favorites" :icon='array("fas", "heart")'>
+        <favorite-repositories></favorite-repositories>
+    </side-bar-pane>
+    <side-bar-pane title="Recent" :icon='array("history")'>
+        <recent-repositories></recent-repositories>
+    </side-bar-pane>
+    <template slot="content">
+        <source-tabs></source-tabs>
+    </template>
+</side-bar>

@@ -1,0 +1,59 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.window.filesearch.Item"/>
+
+<el-dialog top="10vh"
+           :visible="true"
+           width="600px"
+           :show-close="false"
+           :modal="false"
+           class="el-is-no-header el-is-body-padingless el-is-shadowless el-is-has-borders"
+           @close="onClose"
+>
+    <div class="is-full-size is-primary-background">
+        <el-radio-group v-model="filter">
+            <el-radio-button label="All"></el-radio-button>
+            <el-radio-button v-if="primaryLanguage != null" :label="primaryLanguage"></el-radio-button>
+        </el-radio-group>
+
+        <el-input v-model="input"
+                  class="is-borderless has-top-border"
+                  ref="inputComponent"
+        >
+            <span slot="suffix">
+                <fa-icon icon="search"></fa-icon>
+                <span v-if="found > 0">
+                    {{found}}
+                </span>
+            </span>
+
+        </el-input>
+
+        <div v-if="items.length > 0" class="is-full-size has-top-border is-workspace" style="height: 400px;">
+            <simple-bar style="width: 100%; height: 100%;">
+                <ul class="g-list is-mini is-unselectable">
+                    <li :key="index"
+                        v-for="(Item item, index) in items"
+                        :class='map(e("is-overflow-ellipses", true), e("is-background-color-6", index == itemIndex))'
+                        ref="itemElements"
+                        @click="onFileSelection(index)"
+                    >
+                        <span style="width: 28px;" class="tag is-badge">{{item.extension.toUpperCase()}}</span>
+                        <span>{{item.name}}</span>
+                        <span class="is-font-color-6 is-fontsize-medium">
+                            {{item.directory}}
+                        </span>
+                    </li>
+
+                    <li ref="loadMoreElement"
+                        v-if="hasMoreItems"
+                        @click="onLoadMore"
+                        :class='map(e("is-background-color-6", itemIndex == items.length))'
+                    >
+                        <fa-icon v-if="loadingMore" icon="cog" spin size="1x"></fa-icon>
+                        Load more...
+                    </li>
+                </ul>
+            </simple-bar>
+        </div>
+    </div>
+
+</el-dialog>

@@ -1,0 +1,76 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.repository.data.RepositoryTreeNode"/>
+<vue-gwt:import class="ru.githarbor.frontend.harbor.elementui.TreeNode"/>
+
+<div class="is-flex is-vertical is-full-height is-no-outline" tabindex=0 @keydown="onKeyNavigation">
+    <div class="g-toolbar is-flex">
+        <div class="is-flex is-flex-grow">
+            <branch-select @change="onBranchChange"></branch-select>
+
+            <div class="is-flex is-vertical-centered is-horizontal-end is-flex-grow">
+                <div class="is-flex is-vertical-centered">
+                    <span class="icon is-background-6-hoverable has-round-2x-border">
+                        <fa-icon :icon='array("far","dot-circle")' class="is-fontsize-medium"></fa-icon>
+                    </span>
+
+                    <template v-if="isTier1User">
+                        <div class="g-toolbar-divider">
+
+                        </div>
+                        <span class="icon is-background-6-hoverable has-round-2x-border" @click="onFavoriteClick">
+                            <fa-icon :icon='array(inFavorites ? "fas" : "far","heart")' class="is-fontsize-medium"></fa-icon>
+                        </span>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="is-flex is-vertical is-full-height">
+        <context-menu :actions="contextMenuActions" :position="contextMenuPosition">
+
+        </context-menu>
+        <div v-if="resolvingBranch">
+            {{resolvingBranchProcessMessage}}
+        </div>
+        <simple-bar style="width: 100%; height: 100%;"
+                    data-simplebar-auto-hide="false"
+                    v-else
+        >
+            <el-tree :props='map(e("children", "children"), e("isLeaf", "leaf"))'
+                     :load="resolveTreeNodes"
+                     :highlight-current="true"
+                     ref="treeComponent"
+                     node-key="key"
+                     @node-collapse="onNodeCollapse"
+                     @node-expand="onNodeExpand"
+                     @node-contextmenu="onContextMenu"
+                     lazy
+            >
+
+                <template slot-scope="{TreeNode node, RepositoryTreeNode data}">
+                    <div v-if="node.isLeaf"
+                         :id='data.key'
+                         class="is-flex is-vertical-centered is-full-width"
+                         @dblclick="onFileDoubleClick(data)"
+                    >
+                        <span style="width: 28px;" class="tag is-badge">{{data.extension.toUpperCase()}}</span>
+
+                        <span>
+                            {{data.name}}
+                        </span>
+                    </div>
+
+                    <div :id='data.key'
+                         class="is-flex is-vertical-centered is-full-width"
+                         v-else
+                    >
+                        <fa-icon icon="folder"></fa-icon>
+
+                        <span>
+                            {{data.name}}
+                        </span>
+                    </div>
+                </template>
+            </el-tree>
+        </simple-bar>
+    </div>
+</div>

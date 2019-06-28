@@ -1,0 +1,38 @@
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.window.codesearch.item.CodeSearchItem"/>
+
+<div class="is-full-size">
+    <simple-bar style="width: 100%; height: 100%;">
+        <ul class="g-list is-mini is-unselectable">
+            <li :key="index"
+                v-for="(CodeSearchItem item, index) in items"
+                @click="onItemSelect(index, item)"
+                :class='map(e("is-background-color-6", currentIndex == index))'
+            >
+                <span style="width: 28px;" class="tag is-badge">{{item.extension.toUpperCase()}}</span>
+                <span>
+                    {{item.name}}
+                </span>
+
+                <span v-if="item.resolving">
+                    <fa-icon icon="cog" spin class="is-font-color-6"></fa-icon>
+                    <span class="is-font-color-6">
+                        Resolving...
+                    </span>
+                </span>
+                <span v-if="item.resolved" class="is-font-color-6 is-fontsize-medium">
+                    {{item.occurrences}} occurrences
+                </span>
+            </li>
+
+            <li v-if="loadMore"
+                @click="onLoadMore"
+                :class='map(e("is-background-color-6", currentIndex == items.length))'
+            >
+                <fa-icon v-if="loadingMore" icon="cog" spin></fa-icon>
+                <span>
+                    Load more...
+                </span>
+            </li>
+        </ul>
+    </simple-bar>
+</div>

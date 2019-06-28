@@ -1,0 +1,13 @@
+$size-4: 1.0625rem;
+$size-5: 0.9375rem;
+$size-6: 0.8125rem;
+$size-7: 0.75rem;
+
+$border:$g-border-primary-color;
+$body-background-color: $g-primary-color;
+
+// Disable the widescreen breakpoint
+$widescreen-enabled: false;
+
+// Disable the fullhd breakpoint
+$fullhd-enabled: false;

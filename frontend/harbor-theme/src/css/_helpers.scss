@@ -1,0 +1,86 @@
+.has-right-border {
+  border-right: $g-border;
+}
+
+.has-bottom-border {
+  border-bottom: $g-border;
+}
+
+.has-top-border {
+  border-top: $g-border;
+}
+
+.has-borders {
+  border:$g-border;
+}
+
+.has-round-borders {
+  border-radius: 2px;
+}
+
+.has-round-2x-border {
+  border-radius: 4px;
+}
+
+.is-padding {
+  padding: $g-vertical-offset $g-horizontal-offset;
+}
+
+.has-vertical-padding {
+  padding-top: $g-vertical-offset;
+  padding-bottom: $g-vertical-offset;
+}
+
+.is-margin-top-one {
+  margin-top: 1px !important;
+}
+
+.is-margin-left {
+  margin-left: $g-horizontal-offset;
+}
+
+.is-workspace {
+  background: $g-work-space-color;
+}
+
+.is-primary-background {
+  background: $g-primary-color;
+}
+
+.ia-transitionless {
+  transition: none !important;
+  transform-origin: unset !important;
+}
+
+.is-font-color-6 {
+  color: $g-color-3;
+}
+
+.is-background-3-hoverable {
+  &:hover {
+    background: $g-color-3;
+  }
+}
+
+.is-background-6-hoverable {
+  &:hover {
+    background: $g-color-6;
+  }
+}
+
+
+.is-divider {
+  margin: 0 $g-horizontal-offset;
+  border-left: $g-border;
+  height: 70%;
+}
+
+.is-no-outline {
+  outline: 0;
+}
+
+.is-overflow-ellipses {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

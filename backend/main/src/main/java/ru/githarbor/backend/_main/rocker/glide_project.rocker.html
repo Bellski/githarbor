@@ -1,0 +1,25 @@
+@import ru.githarbor.shared.User
+
+@args (String userJson, String uiStateJson, String theme)
+
+<!doctype html>
+<html>
+<head>
+    <meta data-user="@userJson">
+    @if (uiStateJson != null) {
+    <meta data-uistate="@uiStateJson">
+    }
+    <title>Glide</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <link data-theme rel="stylesheet" href="/harbor/assets/webpack/css/@theme">
+    <script type="text/javascript" src="/harbor/assets/webpack/bootstrap.js"></script>
+</head>
+
+<body>
+    <div id="resolve"></div>
+    <div id="app"></div>
+</body>
+
+</html>

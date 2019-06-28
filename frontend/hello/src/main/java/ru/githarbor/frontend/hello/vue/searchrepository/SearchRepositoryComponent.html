@@ -1,0 +1,24 @@
+<div class="is-flex is-vertical is-fullheight">
+
+    <el-input v-model="input"
+              class="g-search-repository-input"
+              placeholder="Enter repository name or GitHub url"
+              autofocus
+    >
+        <fa-icon slot="suffix" icon="search"></fa-icon>
+    </el-input>
+
+
+    <loader v-if="searching"></loader>
+
+    <div class="is-flex is-vertical is-fullheight is-centered" v-if="!searching && repositories.length == 0">
+        Nothing found
+    </div>
+
+    <div v-if="!searching && repositories.length > 0"
+         class="is-flex is-fullheight"
+    >
+
+        <search-repository-result :repositories="repositories"></search-repository-result>
+    </div>
+</div>

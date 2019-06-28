@@ -1,0 +1,74 @@
+<vue-gwt:import class="ru.githarbor.frontend.github.request.RepositorySearchRequest.Repository"/>
+
+<el-popover placement="bottom"
+            trigger="manual"
+            v-model="visible"
+            width="450"
+            popper-class="is-paddingless is-margin-top-one ia-transitionless"
+            style="max-height: 400px;"
+            :popper-options='map(e("boundariesElement", "body"))'
+>
+
+    <el-input v-model="input"
+              ref="inputElement"
+              placeholder="Enter repository name or GitHub url"
+              style="width: 450px"
+              slot="reference"
+    >
+
+        <fa-icon slot="suffix" icon="search"></fa-icon>
+
+    </el-input>
+
+    <div v-if="searching" class="is-padding is-workspace has-round-borders">
+        <loader></loader>
+    </div>
+
+    <div class="is-flex is-vertical is-centered is-padding is-workspace has-round-borders" v-if="!searching && repositories.length == 0">
+        Nothing found
+    </div>
+
+    <div v-if="!searching && repositories.length > 0"
+         class="is-workspace has-round-borders" style="height: 400px;"
+    >
+
+        <simple-bar style="width: 100%; height: 100%;">
+            <ul class="g-list">
+                <li :key="index" v-for="(Repository repository, index) in repositories">
+                    <div class="is-flex" style="padding-bottom: 3px;">
+                        <open-repository :name="repository.nameWithOwner"></open-repository>
+                    </div>
+                    <div v-html="repository.description" style="padding-bottom: 5px;">
+                    </div>
+                    <ul class="g-list is-horizontal">
+                        <li v-if="repository.primaryLanguage != null">
+                            <span class="is-flex is-centered">
+                                <fa-icon icon="circle"
+                                         :style='map(e("color", repository.primaryLanguage.color))'></fa-icon>
+                                <span class="is-color-2">
+                                    {{repository.primaryLanguage.name}}
+                                </span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="is-flex is-centered">
+                                <fa-icon icon="star" class="is-color-2"></fa-icon>
+                                <span class="is-color-2">
+                                    {{repository.stars}}
+                                </span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="is-flex is-centered">
+                                <fa-icon icon="heartbeat" class="is-color-2"></fa-icon>
+                                <span class="is-color-2">
+                                    {{repository.updatedAt}}
+                                </span>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </simple-bar>
+    </div>
+</el-popover>

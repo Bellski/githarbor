@@ -1,0 +1,20 @@
+<vue-gwt:import class="ru.githarbor.frontend.vue.component.searchrepository.Repository"/>
+
+<div class="is-flex is-vertical is-full-size">
+
+    <div class="is-flex has-bottom-border">
+        <el-input v-model="input"
+                  placeholder="Search"
+                  class="is-borderless">
+
+            <fa-icon icon='search' slot="suffix"></fa-icon>
+
+        </el-input>
+    </div>
+
+    <loader v-if="loading"></loader>
+
+    <div class="is-flex is-full-size" v-else>
+        <repository-list :editable="true" :repositories="repositories" @delete="onRepositoryDelete"></repository-list>
+    </div>
+</div>

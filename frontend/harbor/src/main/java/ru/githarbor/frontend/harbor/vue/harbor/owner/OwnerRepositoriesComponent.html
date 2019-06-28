@@ -1,0 +1,17 @@
+<div class="is-flex is-vertical is-full-size">
+
+    <div class="is-flex has-bottom-border">
+        <el-input v-model="input"
+                  class="is-borderless"
+                  placeholder="Search"
+        >
+            <fa-icon slot="suffix" icon="search"></fa-icon>
+        </el-input>
+    </div>
+
+    <loader v-if="loading"></loader>
+
+    <div class="is-flex is-full-size" v-else>
+        <repository-list :repositories="repositories"></repository-list>
+    </div>
+</div>

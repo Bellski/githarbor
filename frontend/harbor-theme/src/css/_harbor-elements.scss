@@ -1,0 +1,94 @@
+.is-hoverable-link {
+  user-select: none;
+
+  &:hover {
+    font-weight: bold;
+  }
+}
+
+.g-list {
+  &.is-horizontal {
+    > li {
+      display: inline-block;
+      padding: 0;
+      margin-left: 0;
+      margin-right: $g-horizontal-offset;
+    }
+  }
+
+  &.is-hoverable {
+    > li:hover {
+      background: $g-hover-color;
+    }
+  }
+
+  > li {
+    padding: ($g-vertical-offset + 0.1) $g-horizontal-offset;
+  }
+
+  &.is-mini {
+    > li {
+      padding: 0.04rem  $g-horizontal-offset;
+    }
+  }
+}
+
+
+
+.g-icon-badge {
+
+  background: $g-color-4;
+  color: $g-primary-color;
+  font-weight: bold;
+  font-size: 9px;
+  border-radius: 4px;
+  padding: 2px 4px;
+
+  .svg-inline--fa {
+    font-size: 10px;
+    color: $g-primary-color;
+    vertical-align: -1px;
+  }
+
+  &.g-icon-badge-empty {
+    padding: 2px 1px 2px 4px;
+  }
+
+  .g-icon-badge-text {
+    display: inline-block;
+  }
+
+  a {
+
+    cursor: default;
+
+    &:link,
+    &:visited,
+    &:hover,
+    &:active {
+      text-decoration: none;
+    }
+  }
+
+  &.g-icon-badge-hoverable {
+    &:hover {
+      background: $g-color-5;
+    }
+  }
+}
+
+.tag:not(body) {
+  &.is-badge {
+    height: 1.4em;
+    font-size: 0.5rem;
+    background: $g-color-4;
+    color: $g-work-space-color;
+    font-weight: 500;
+    display: inline-block;
+    padding: 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+}
