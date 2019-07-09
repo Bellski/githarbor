@@ -1,5 +1,7 @@
 package ru.githarbor.frontend.harbor.jslib;
 
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
@@ -24,4 +26,7 @@ public class HarborGlobal {
 
     @JsMethod(name = "window.highlight", namespace = JsPackage.GLOBAL)
     public native static String highlight(String query, String content);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "window.getComputedStyle")
+    public static native CSSStyleDeclaration getComputedStyle(Element elt);
 }

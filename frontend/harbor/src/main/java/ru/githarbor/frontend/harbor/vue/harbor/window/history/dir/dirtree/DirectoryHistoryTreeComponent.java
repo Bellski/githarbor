@@ -3,9 +3,13 @@ package ru.githarbor.frontend.harbor.vue.harbor.window.history.dir.dirtree;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.Prop;
+import com.axellience.vuegwt.core.annotations.component.Ref;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import elemental2.core.JsArray;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLElement;
 import io.reactivex.Observable;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
@@ -14,6 +18,7 @@ import ru.githarbor.frontend.harbor.core.github.core.Repository;
 import ru.githarbor.frontend.harbor.core.github.request.CommitFilesRequest;
 import ru.githarbor.frontend.harbor.core.github.request.CommitsRequest;
 import ru.githarbor.frontend.harbor.core.github.request.DiffContentRequest;
+import ru.githarbor.frontend.harbor.jslib.MyKeyboardEvent;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.diff.DiffData;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.diff.SourceDiffComponent;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.dir.dirtree.data.FileNode;
@@ -22,8 +27,11 @@ import ru.githarbor.frontend.harbor.vue.harbor.window.history.dir.dirtree.data.R
 import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static elemental2.dom.DomGlobal.setTimeout;
 
 @Component(components = {
         LoaderComponent.class,
@@ -64,10 +72,42 @@ public class DirectoryHistoryTreeComponent implements IsVueComponent, HasCreated
     @Data
     public FileNode commitFile;
 
+    @Ref
+    public IsVueComponent diffDialog;
+
+    @Ref
+    public IsVueComponent treeComponent;
+
     private JsPropertyMap<JsArray<Node>> commitFilesCache = Js.cast(JsPropertyMap.of());
+
+    private EventListener keyDownListener;
 
     @Override
     public void created() {
+        vue().$watch(() -> visibleDiff, (newVisible, oldVisible) -> {
+            if (newVisible) {
+                vue().$nextTick(() -> {
+                    setTimeout(p0 -> diffDialog.vue().$el().focus(), 100);
+
+                    diffDialog.vue().$el().setAttribute("tabindex", 0);
+                    diffDialog.vue().$el().addEventListener("keydown", keyDownListener = evt -> {
+                        final MyKeyboardEvent myKeyboardEvent = Js.cast(evt);
+
+                        if (myKeyboardEvent.getKeyCode() == 27) {
+                            if (Arrays.asList(evt.path).contains(diffDialog.vue().$el())) {
+                                onDiffClose();
+                            }
+                        }
+                    });
+
+                });
+
+                return;
+            }
+
+            diffDialog.vue().$el().removeEventListener("keydown", keyDownListener);
+        });
+
         vue().$watch(() -> commit, (newValue, oldValue) -> {
             loading = true;
 
@@ -147,5 +187,17 @@ public class DirectoryHistoryTreeComponent implements IsVueComponent, HasCreated
     public void onDiffClose() {
         visibleDiff = false;
         diffData = null;
+
+        diffDialog.vue().$el().removeEventListener("keydown", keyDownListener);
+
+        vue().$nextTick(() -> setTimeout(p0 -> {
+            treeComponent.vue().$el().setAttribute("tabindex", 0);
+            treeComponent.vue().$el().focus();
+        }, 100));
+    }
+
+    @JsMethod
+    public void onDiffOpen() {
+        DomGlobal.console.warn("onDiffOpen");
     }
 }

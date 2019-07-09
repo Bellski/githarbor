@@ -1,0 +1,51 @@
+<vue-gwt:import class="ru.githarbor.shared.RecentRepository"/>
+
+<div class="is-flex is-vertical is-full-size">
+
+    <div class="is-flex has-bottom-border">
+        <div class="is-flex-grow">
+            <el-input v-model="input"
+                      placeholder="Search"
+                      class="is-borderless">
+
+                <fa-icon icon='search' slot="suffix"></fa-icon>
+
+            </el-input>
+        </div>
+        <div class="is-flex is-vertical-centered is-primary-background has-horizontal-padding">
+            <span class="icon is-background-hover has-round-2x-border" @click="onDeleteAll">
+                <fa-icon icon='trash' class="is-fontsize-medium"></fa-icon>
+            </span>
+        </div>
+    </div>
+
+    <loader v-if="loading"></loader>
+
+    <div class="is-flex is-full-size" v-else>
+        <simple-bar class="is-full-size">
+            <ul class="g-list is-unselectable">
+                <li :key="repository.name"
+                    v-for="(RecentRepository repository, index) in repositories"
+                    @mouseover="onMouseOver(index)"
+                    @mouseout="onMouseOut"
+                    @click="onThisWindow(repository.name)"
+                    class="is-flex is-background-hover"
+                >
+                    <div class="is-flex-grow">
+                        <div class="is-flex is-vertical-centered" style="padding-bottom: 3px;">
+                            <span class="title is-6 is-marginless">{{repository.name}}</span>
+                        </div>
+                        <div>{{formatDate(repository.date)}}
+
+                        </div>
+                    </div>
+                    <div class="is-flex is-vertical-centered">
+                        <span v-show="currentOverIndex == index" class="icon is-background-6-hoverable has-round-2x-border" @click.stop="onDelete(repository.name)">
+                            <fa-icon icon='times' class="is-color-4"></fa-icon>
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </simple-bar>
+    </div>
+</div>

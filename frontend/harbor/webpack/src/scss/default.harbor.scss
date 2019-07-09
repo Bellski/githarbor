@@ -9,7 +9,6 @@
 @import "../../../../harbor-theme/src/vue/harbor-vue-components";
 
 
-
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 @import "../../../../harbor-theme/src/vendors/element-ui/element-ui-variable";
 
@@ -25,8 +24,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 @import "~element-ui/packages/theme-chalk/src/dropdown";
 @import "~element-ui/packages/theme-chalk/src/dropdown-menu";
 @import "~element-ui/packages/theme-chalk/src/dropdown-item";
+@import "~element-ui/packages/theme-chalk/src/switch";
 @import "~element-ui/packages/theme-chalk/src/radio-button";
 @import "~element-ui/packages/theme-chalk/src/radio-group";
+@import "~element-ui/packages/theme-chalk/src/tooltip";
 
 
 @import "../../../../harbor-theme/src/vendors/element-ui/element-ui";
@@ -45,6 +46,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 @import "../../../../harbor-theme/src/vendors/split-panes";
 
 @import "../../../../harbor-theme/src/vendors/github-markdown";
+
+@import "../../../../harbor-theme/src/vendors/font-awesome";
+@import "~monaco-editor/min/vs/editor/editor.main.css";
+
 
 .markdown-body {
   box-sizing: border-box;
@@ -80,6 +85,11 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 .monaco-menu {
   .monaco-action-bar {
     &.vertical {
+      border-left: none;
+      border-top: $g-border;
+      border-right: $g-border;
+      border-bottom: $g-border;
+
       .action-menu-item {
         height: 22px;
         font-size: $g-font-size;
@@ -88,9 +98,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   }
 }
 .monaco-scrollable-element {
+  border-left: $g-border;
   border-top: none;
+  border-right: none;
+  border-bottom: none;
 }
 
 .monaco-editor .margin {
-  border-top: $g-border;
+  border-top: none;
 }

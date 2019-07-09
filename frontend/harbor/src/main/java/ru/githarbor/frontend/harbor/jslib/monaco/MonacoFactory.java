@@ -1,16 +1,13 @@
 package ru.githarbor.frontend.harbor.jslib.monaco;
 
-import com.intendia.rxgwt2.elemental2.RxElemental2;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLScriptElement;
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
+import ru.githarbor.frontend.monaco.LanguageExtensionPoints;
+import ru.githarbor.frontend.monaco.Monaco;
+import ru.githarbor.frontend.monaco.editor.IEditor;
+import ru.githarbor.frontend.monaco.editor.StandaloneDiffEditor;
 import ru.githarbor.frontend.harbor.core.github.core.File;
-import ru.githarbor.frontend.harbor.jslib.monaco.editor.IEditor;
-import ru.githarbor.frontend.harbor.jslib.monaco.editor.StandaloneDiffEditor;
 import ru.githarbor.shared.User;
 
 import javax.inject.Inject;
@@ -28,47 +25,10 @@ public class MonacoFactory {
         this.languageExtensionPoints = languageExtensionPoints;
     }
 
-    public boolean isReady() {
-        return DomGlobal.document.querySelector("[monaco]") != null;
-    }
-
-    public Completable onReady() {
-        if (!isReady()) {
-            return Completable.create(e -> {
-                final HTMLScriptElement monacoScriptElement = Js.cast(DomGlobal.document.createElement("script"));
-                monacoScriptElement.setAttribute("monaco", "");
-                monacoScriptElement.type = "text/javascript";
-                monacoScriptElement.src = "/harbor/assets/webpack/monaco.js";
-                monacoScriptElement.onload = p0 -> {
-                    Monaco.defineTheme("light", Theme.LIGHT);
-                    Monaco.defineTheme("dark", Theme.DARK);
-
-                    Monaco.MonacoOptions.INSTANCE.theme = user.theme;
-
-                    Monaco.setJavaScriptEagerModelSync(true);
-                    Monaco.setJavaScriptDiagnosticsOptions(
-                            JsPropertyMap.of(
-                                    "noSemanticValidation", true,
-                                    "noSyntaxValidation", true
-                            )
-                    );
-
-                    e.onComplete();
-
-                    return null;
-                };
-
-                DomGlobal.document.head.appendChild(monacoScriptElement);
-            });
-        }
-
-        return Completable.complete();
-    }
-
     public IEditor create(HTMLElement container) {
         final IEditor editor = Monaco.createEditor(container);
 
-        Monaco.setTheme(user.theme);
+        Monaco.setTheme(user.getTheme());
 
         return editor;
     }
@@ -77,7 +37,7 @@ public class MonacoFactory {
 
         final StandaloneDiffEditor editor = Monaco.createDiffEditor(container, initModel(file, modified), initModel(file, original));
 
-        Monaco.setTheme(user.theme);
+        Monaco.setTheme(user.getTheme());
 
         return editor;
     }
@@ -93,12 +53,12 @@ public class MonacoFactory {
     }
 
     public ITextModel initModel(String name, String content) {
-        return Monaco.createModel(content, languageExtensionPoints.getLanguageFromFileName(name));
+        return Js.cast(Monaco.createModel(content, languageExtensionPoints.getLanguageFromFileName(name)));
     }
 
-    public Single<String> colorize(String name, String content) {
-        return RxElemental2.fromPromise(Monaco.colorize(content, languageExtensionPoints.getLanguageFromFileName(name)));
-    }
+//    public Single<String> colorize(String name, String content) {
+//        return RxElemental2.fromPromise(Monaco.colorize(content, languageExtensionPoints.getLanguageFromFileName(name)));
+//    }
 
     public StandaloneDiffEditor.DiffModel initDiffModel(String modified, String original, String file) {
         final StandaloneDiffEditor.DiffModel diffModel = new StandaloneDiffEditor.DiffModel();

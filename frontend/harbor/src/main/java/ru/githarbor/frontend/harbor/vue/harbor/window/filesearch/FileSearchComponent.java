@@ -181,6 +181,8 @@ public class FileSearchComponent implements IsVueComponent, HasCreated, HasMount
                 evt.stopPropagation();
 
                 filter = filter.equals("All") ? getPrimaryLanguage() : "All";
+
+                return;
             }
 
             if (keyboardEvent.getKeyCode() == 38 && itemIndex > 0) {
@@ -222,6 +224,10 @@ public class FileSearchComponent implements IsVueComponent, HasCreated, HasMount
                 evt.stopPropagation();
 
                 scrollTo(itemIndex = endOfList);
+            } else if (keyboardEvent.getKeyCode() == 27) {
+                if (Arrays.asList(evt.path).contains(vue().$el())) {
+                    onClose();
+                }
             }
         });
     }

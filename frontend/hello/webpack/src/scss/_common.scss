@@ -1,0 +1,39 @@
+@import "../../../../harbor-theme/src/harbor-variables";
+@import "../../../../harbor-theme/src/css/harbor-elements";
+@import "../../../../harbor-theme/src/css/helpers";
+@import "../../../../harbor-theme/src/css/responsive-helpers";
+@import "../../../../harbor-theme/src/css/typography";
+@import "../../../../harbor-theme/src/css/place-holders";
+@import "../../../../harbor-theme/src/vue/harbor-vue-components";
+
+
+@import "../../../../harbor-theme/src/vendors/element-ui/element-ui-variable";
+
+@import "~element-ui/packages/theme-chalk/src/tabs";
+@import "~element-ui/packages/theme-chalk/src/tab-pane";
+@import "~element-ui/packages/theme-chalk/src/input";
+@import "~element-ui/packages/theme-chalk/src/dialog";
+@import "~element-ui/packages/theme-chalk/src/button";
+@import "~element-ui/packages/theme-chalk/src/popover";
+
+@import "../../../../harbor-theme/src/vendors/element-ui/element-ui";
+
+
+@import "../../../../harbor-theme/src/vendors/simple-bar";
+@import '~simplebar/dist/simplebar.min.css';
+
+@import "../../../../harbor-theme/src/vendors/bulma/bulma-variables";
+
+@import "~bulma/bulma";
+
+@import "../../../../harbor-theme/src/vendors/bulma/bulma";
+
+
+@import "../../../../harbor-theme/src/common";
+
+.g-repository-search-input {
+  .el-input__inner {
+    height: 27px !important;
+    line-height: 27px !important;
+  }
+}

@@ -1,11 +1,8 @@
-<side-bar @splitter-moved="handleMoved">
+<side-bar>
     <side-bar-pane :title="name" :icon='array("box")'>
         <repository-tree></repository-tree>
     </side-bar-pane>
-    <side-bar-pane :title="owner" :icon='array("fab", "github-alt")'>
-        <owner-repositories></owner-repositories>
-    </side-bar-pane>
-    <side-bar-pane title="Favorites" :icon='array("fas", "heart")'>
+    <side-bar-pane v-if="userTier1" title="Favorites" :icon='array("fas", "heart")'>
         <favorite-repositories></favorite-repositories>
     </side-bar-pane>
     <side-bar-pane title="Recent" :icon='array("history")'>

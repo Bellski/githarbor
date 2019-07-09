@@ -14,8 +14,11 @@
 
     .#{$primaryStyleName}-header {
       border-right: $g-border;
+      display:flex;
+      width: 28px;
 
       .#{$primaryStyleName}-header-tab-list {
+        width: 28px;
 
 
         > li:first-child {

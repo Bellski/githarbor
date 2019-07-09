@@ -1,5 +1,6 @@
 package ru.githarbor.frontend.harbor.core.github.core;
 
+import elemental2.dom.DomGlobal;
 import io.reactivex.Single;
 
 public class File {
@@ -57,7 +58,14 @@ public class File {
         }
 
         return branch.fileContentRequest.execute(branch.name, branch.ownerWithName.ownerWithName, getPath())
-                .doOnSuccess(blob -> content = blob.text)
+                .doOnSuccess(blob -> {
+
+                    if (blob.text == null) {
+                        throw new IllegalStateException("Source is binary");
+                    }
+
+                    content = blob.text;
+                })
                 .map(blob -> blob.text);
     }
 
@@ -66,6 +74,26 @@ public class File {
             return null;
         }
 
-        return branch.getDirectories()[Double.valueOf(parent).intValue()].path;
+        return getParent().path;
+    }
+
+    public Directory getParent() {
+        if (parent == -1) {
+            return null;
+        }
+
+        return branch.getDirectories()[Double.valueOf(parent).intValue()];
+    }
+
+    public static String extension(String file) {
+        if (file.startsWith(".") || file.lastIndexOf(".") == -1) {
+            return "text";
+        } else {
+            return file.substring(file.lastIndexOf(".") + 1);
+        }
+    }
+
+    public static boolean isJava(File file) {
+        return file.extension.equals("java");
     }
 }

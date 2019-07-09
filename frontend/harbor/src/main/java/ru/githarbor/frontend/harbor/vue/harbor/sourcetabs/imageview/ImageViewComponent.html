@@ -1,0 +1,9 @@
+<div class="is-full-height is-flex is-centered is-workspace">
+    <loader v-if="loading" text="Loading image..."></loader>
+    <img class="is-img-autosizable"
+         style="max-height: 800px;"
+         v-show="!loading"
+         :src='"https://raw.githubusercontent.com/" + src' alt=""
+         @load="handleOnLoadImage"
+    />
+</div>

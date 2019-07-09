@@ -1,6 +1,7 @@
 package ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.data;
 
-import ru.githarbor.frontend.harbor.jslib.monaco.IRange;
+
+import ru.githarbor.frontend.monaco.IRange;
 
 public class SourceTab {
     public final String name;

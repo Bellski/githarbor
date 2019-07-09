@@ -8,6 +8,7 @@ import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasDestroyed;
 import com.axellience.vuegwt.core.client.component.hooks.HasMounted;
 import elemental2.core.JsArray;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 
 import javax.inject.Inject;

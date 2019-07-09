@@ -28,8 +28,8 @@ public class MainDeclarations {
     @Singleton
     DataSource provideSqlDataSource() {
         final HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
-        config.setUsername("postgres");
+        config.setJdbcUrl("jdbc:postgresql://localhost:5432/githarbor");
+        config.setUsername("githarbor");
         config.setPassword("1");
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");

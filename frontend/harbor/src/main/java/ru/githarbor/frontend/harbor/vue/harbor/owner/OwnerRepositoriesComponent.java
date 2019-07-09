@@ -65,7 +65,6 @@ public class OwnerRepositoriesComponent implements IsVueComponent, HasCreated {
 
                                 return new ru.githarbor.frontend.vue.component.searchrepository.Repository(
                                         repository.nameWithOwner,
-                                        repository.description,
                                         languageColor,
                                         languageName,
                                         HarborGlobal.kFormat(repository.stars),

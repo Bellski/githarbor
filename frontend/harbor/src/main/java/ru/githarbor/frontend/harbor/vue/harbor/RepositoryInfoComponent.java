@@ -29,4 +29,9 @@ public class RepositoryInfoComponent implements IsVueComponent {
     public String getStars() {
         return HarborGlobal.kFormat(Double.valueOf(repository.info.stars));
     }
+
+    @Computed
+    public String getUpdatedAt() {
+        return HarborGlobal.timeAgo(repository.getCurrentBranch().committedDate);
+    }
 }

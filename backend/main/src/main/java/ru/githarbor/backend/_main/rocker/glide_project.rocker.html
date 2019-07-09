@@ -1,6 +1,6 @@
 @import ru.githarbor.shared.User
 
-@args (String userJson, String uiStateJson, String theme)
+@args (String userJson, String uiStateJson, String theme, String themeName)
 
 <!doctype html>
 <html>
@@ -13,7 +13,7 @@
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <link data-theme rel="stylesheet" href="/harbor/assets/webpack/css/@theme">
+    <link data-@themeName rel="stylesheet" href="/harbor/assets/webpack/css/@theme">
     <script type="text/javascript" src="/harbor/assets/webpack/bootstrap.js"></script>
 </head>
 

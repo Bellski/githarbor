@@ -1,7 +1,7 @@
 $g-primary-color: #F5F5F5 !default;
 $g-work-space-color: #FFFF !default;
-$g-select-color: #D8D8D8 !default;
-$g-hover-color: scale-color($g-work-space-color, $lightness: max(-100%, -100% * 0.05), $saturation: max(-100%, -50% * 0.05)) !default;
+$g-select-color: scale-color($g-work-space-color, $lightness: max(-100%, -100% * 0.1), $saturation: max(-100%, -50% * 0.07)) !default;
+$g-hover-color: scale-color($g-work-space-color, $lightness: max(-100%, -100% * 0.08), $saturation: max(-100%, -50% * 0.07)) !default;
 
 $g-color-1: scale-color($g-primary-color, $lightness: max(-100%, -100% * 0.8), $saturation: max(-100%, -50% * 0.8)) !default;
 $g-color-2: scale-color($g-primary-color, $lightness: max(-100%, -100% * 0.6), $saturation: max(-100%, -50% * 0.6)) !default;
@@ -32,4 +32,13 @@ $g-font-size-title-4: 1.0625rem;
 $g-horizontal-offset: 0.4375rem !default;
 $g-vertical-offset: 0.25rem !default;
 
+/** Tabs
+-------------------------------------------- */
+$g-active-tab-fill: $g-work-space-color !default;
+
+/**
+---------------------------------------------*/
+$g-repository-tree-folder-icon-color: $g-color-2 !default;
+
+$g-code-search-mark-background: #c6f68d;
 

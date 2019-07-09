@@ -1,19 +1,20 @@
 package ru.githarbor.frontend.harbor.vue.harbor.window.history.diff;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
-import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasBeforeDestroy;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasMounted;
+import com.axellience.vuegwt.core.client.component.options.functions.OnEvent;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
+import ru.githarbor.frontend.harbor.event.Events;
 import ru.githarbor.frontend.harbor.jslib.monaco.MonacoFactory;
-import ru.githarbor.frontend.harbor.jslib.monaco.editor.IEditor;
-import ru.githarbor.frontend.harbor.jslib.monaco.editor.StandaloneDiffEditor;
+import ru.githarbor.frontend.monaco.editor.IEditor;
+import ru.githarbor.frontend.monaco.editor.StandaloneDiffEditor;
 import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
 
 import javax.inject.Inject;
@@ -29,32 +30,24 @@ public class SourceDiffComponent implements IsVueComponent, HasMounted, HasCreat
     @Prop
     public DiffData data;
 
-    @Data
-    public boolean loadingMonaco = false;
-
     public HTMLElement diffContainer;
 
-    public IEditor editor;
+    public IEditor monaco;
+
+    private OnEvent onWindowResized;
 
     @Override
     public void created() {
+        vue().$root().vue().$on(Events.WINDOW_RESIZED, onWindowResized = parameter -> {
+            if (monaco != null) {
+                monaco.layout();
+            }
+        });
     }
 
     @Override
     public void mounted() {
-        if (monacoFactory.isReady()) {
-            processDiff(data);
-
-            return;
-        }
-
-        loadingMonaco = true;
-
-        monacoFactory.onReady().subscribe(() -> {
-            loadingMonaco = false;
-
-            vue().$nextTick(() -> processDiff(data));
-        });
+        processDiff(data);
     }
 
     private void processDiff(DiffData data) {
@@ -62,32 +55,32 @@ public class SourceDiffComponent implements IsVueComponent, HasMounted, HasCreat
         if (data.modified == null) {
             createContainerElement();
 
-            editor = monacoFactory.create(diffContainer);
-            editor.setModel(monacoFactory.initModel(data.fileName, data.original));
+            monaco = monacoFactory.create(diffContainer);
+            monaco.setModel(monacoFactory.initModel(data.fileName, data.original));
 
         } else {
             createContainerElement();
 
-            editor = monacoFactory.createDiff(diffContainer, data.modified, data.original, data.fileName);
+            monaco = monacoFactory.createDiff(diffContainer, data.modified, data.original, data.fileName);
         }
 
-        editor.layout();
+        monaco.layout();
     }
 
     private void dispose() {
-        if (editor != null) {
-            if (editor.isDiff()) {
+        if (monaco != null) {
+            if (monaco.isDiff()) {
 
-                ((StandaloneDiffEditor) editor).getOriginalEditor().dispose();
-                ((StandaloneDiffEditor) editor).getModifiedEditor().dispose();
+                ((StandaloneDiffEditor) monaco).getOriginalEditor().dispose();
+                ((StandaloneDiffEditor) monaco).getModifiedEditor().dispose();
 
-                editor.dispose();
+                monaco.dispose();
 
                 return;
             }
 
-            editor.getModel().dispose();
-            editor.dispose();
+            monaco.getModel().dispose();
+            monaco.dispose();
         }
 
         diffContainer.remove();
@@ -104,9 +97,18 @@ public class SourceDiffComponent implements IsVueComponent, HasMounted, HasCreat
 
     @Override
     public void beforeDestroy() {
-        if (editor != null) {
+        if (monaco != null) {
+            vue().$root().vue().$off(Events.WINDOW_RESIZED, onWindowResized);
+
             dispose();
-            editor = null;
+
+            monaco = null;
+        }
+    }
+
+    public void layout() {
+        if (monaco != null) {
+            monaco.layout();
         }
     }
 }

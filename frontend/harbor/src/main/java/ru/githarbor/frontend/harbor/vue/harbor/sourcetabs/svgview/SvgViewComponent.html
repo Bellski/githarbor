@@ -1,0 +1,21 @@
+<div class="is-full-size is-flex is-centered is-workspace">
+    <loader v-if="loading" text="Loading svg..."></loader>
+
+    <el-tabs type="card"
+             class="is-flex is-full-size"
+             v-model="activeTab"
+             tabPosition="bottom"
+             v-else
+    >
+        <el-tab-pane label="Render" name="render">
+            <div class="is-flex is-full-size is-centered">
+                <div class="g-svg-render" v-html="svgContent"></div>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="Source" name="source">
+            <div ref="monacoContainer" class="is-flex is-full-size">
+
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+</div>

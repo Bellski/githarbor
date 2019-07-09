@@ -2,14 +2,15 @@
      style="position: absolute; display: none; z-index: 99999;"
      class="is-primary-background has-round-borders has-borders is-unselectable is-no-outline"
 >
-    <ul class="g-list">
+    <ul class="g-list is-mini">
         <li v-if="action.visible"
             :key="index"
             v-for="(Action action, index) in actions"
-            class="is-background-6-hoverable"
+            class="is-background-hover"
             @click="onClick(action)"
         >
-            {{action.name}}
+            <span>{{action.name}}</span>
+            <span style="margin-left: 30px; float: right;" v-if="action.shortCut != null">{{action.shortCut}}</span>
         </li>
     </ul>
 </div>

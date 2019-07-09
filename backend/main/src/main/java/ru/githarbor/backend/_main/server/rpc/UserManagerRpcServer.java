@@ -58,5 +58,31 @@ public class UserManagerRpcServer implements Handler {
 
             return;
         }
+
+        if (userManagerRequest.methodName.equals(SetThemeRequest.class.getName())) {
+            final SetThemeRequest setThemeRequest = gson.fromJson(ctx.body(), SetThemeRequest.class);
+
+            userManager.setTheme(ctx.sessionAttribute(Main.GH_ID), setThemeRequest.dark);
+
+            return;
+        }
+
+        if (userManagerRequest.methodName.equals(DeleteAllRecentRepositories.class.getName())) {
+            final DeleteAllRecentRepositories deleteAllRecentRepositories = gson.fromJson(ctx.body(), DeleteAllRecentRepositories.class);
+
+            userManager.deleteAllRecentRepositories(ctx.sessionAttribute(Main.GH_ID));
+
+            return;
+        }
+
+        if (userManagerRequest.methodName.equals(CreateUiStateRequest.class.getName())) {
+            final CreateUiStateRequest createUiStateRequest = gson.fromJson(ctx.body(), CreateUiStateRequest.class);
+
+            final int updateResult = userManager.updateUiState(ctx.sessionAttribute(Main.GH_ID), createUiStateRequest.uiState);
+
+            if (updateResult == 0) {
+                userManager.createUiState(ctx.sessionAttribute(Main.GH_ID), createUiStateRequest.uiState);
+            }
+        }
     }
 }

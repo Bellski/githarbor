@@ -32,7 +32,7 @@ task copyGenerated(type: Copy) {
     into "${buildDir}/classes/java/main"
 }
 
-compileJava.dependsOn copyGenerated
+compileJava.finalizedBy copyGenerated
 
 jar{
     from sourceSets.main.allSource

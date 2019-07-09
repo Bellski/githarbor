@@ -2,29 +2,31 @@ package ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.sourceview;
 
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Data;
-import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.annotations.component.Ref;
-import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasBeforeDestroy;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasMounted;
 import elemental2.dom.HTMLElement;
+import ru.githarbor.frontend.monaco.Disposable;
+import ru.githarbor.frontend.monaco.action.CopyUrlSelectionAction;
+import ru.githarbor.frontend.harbor.core.github.core.File;
 import ru.githarbor.frontend.harbor.core.github.core.Repository;
-import ru.githarbor.frontend.harbor.jslib.monaco.IRange;
 import ru.githarbor.frontend.harbor.jslib.monaco.MonacoFactory;
-import ru.githarbor.frontend.harbor.jslib.monaco.Position;
-import ru.githarbor.frontend.harbor.jslib.monaco.editor.IEditor;
-import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.data.SourceTab;
+import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.MonacoSourceTabComponent;
+import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.SourceTabsSharedState;
 import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
 import ru.githarbor.shared.User;
 
 import javax.inject.Inject;
 
 @Component(components = LoaderComponent.class)
-public class SourceViewComponent implements IsVueComponent, HasCreated, HasMounted, HasBeforeDestroy {
+public class SourceViewComponent extends MonacoSourceTabComponent implements HasCreated, HasMounted, HasBeforeDestroy {
 
     @Inject
     public User user;
+
+    @Inject
+    public SourceTabsSharedState sourceTabsSharedState;
 
     @Inject
     public Repository repository;
@@ -35,69 +37,71 @@ public class SourceViewComponent implements IsVueComponent, HasCreated, HasMount
     @Ref
     public HTMLElement monacoContainer;
 
-    @Prop
-    public SourceTab source;
-
     @Data
     public boolean loading = true;
 
-    private IEditor monaco;
+    @Data
+    public String error;
+
+    private Disposable copyActionDisposable;
 
     @Override
     public void created() {
-
-
+        vue().$watch(() -> sourceTabsSharedState.getCurrentState().activeCodeTab, (newTab, oldTab) -> {
+            if (loading) {
+                mounted();
+            }
+        });
     }
 
     @Override
     public void mounted() {
-        if (monacoFactory.isReady()) {
+        if (source.key.equals(sourceTabsSharedState.getCurrentState().activeCodeTab)) {
             init();
-
-            return;
         }
-
-        monacoFactory.onReady().subscribe(this::init);
     }
 
     private void init() {
-        repository.getCurrentBranch()
-                .getFile(source.key)
-                .ifPresent(file -> monacoFactory.initModel(file).subscribe(iTextModel -> {
-                    loading = false;
+        final File file = repository.getCurrentBranch().getFile(source.key).get();
 
-                    vue().$nextTick(() -> {
-                        monaco = monacoFactory.create(monacoContainer);
-                        monaco.setModel(iTextModel);
+        file.resolveContent().subscribe(content -> {
+            loading = false;
 
-                        vue().$nextTick(() -> {
-                            if (source.range != null) {
-                                revealRange(source.range);
-                            }
+            vue().$nextTick(() -> {
+                monaco = monacoFactory.create(monacoContainer);
+                copyActionDisposable = monaco.addAction(new CopyUrlSelectionAction(
+                        repository.toString(),
+                        repository.getCurrentBranch().name,
+                        source.key
+                ));
+                monaco.setModel(monacoFactory.initModel(file.name, content));
 
-                            monaco.layout();
-                            monaco.focus();
-                        });
-                    });
-                }));
-    }
+                onMonacoCreated();
 
-    private void revealRange(IRange iRange) {
-        monaco.revealLineInCenter(iRange.getStartLineNumber());
-        monaco.setPosition(Position.create(iRange.getStartLineNumber(), iRange.getStartColumn()));
+                vue().$nextTick(() -> {
+                    if (source.range != null) {
+                        revealRange(source.range);
+                    }
 
-        monaco.focus();
+                    monaco.layout();
+                    monaco.focus();
+                });
+            });
+        }, throwable -> {
+            error = throwable.getMessage();
+            loading = false;
+        });
     }
 
     @Override
     public void beforeDestroy() {
-        if (monaco != null) {
-            monaco.getModel().dispose();
-            monaco.dispose();
-            monaco = null;
-            user = null;
-            repository = null;
-            monacoFactory = null;
+        if (copyActionDisposable != null) {
+            copyActionDisposable.dispose();
+            copyActionDisposable = null;
         }
+
+        user = null;
+        repository = null;
+        monacoFactory = null;
     }
 }

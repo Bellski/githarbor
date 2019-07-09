@@ -1,0 +1,27 @@
+<vue-gwt:import class="ru.githarbor.frontend.monaco.Usage"/>
+
+<div tabindex="0"
+     style="position: absolute; display: none; z-index: 99999;"
+     class="is-workspace has-round-borders has-borders is-unselectable is-no-outline"
+>
+    <div class="has-bottom-border is-padding is-primary-background has-text-centered">
+        Usages of {{usageOf}} ({{usages.length}} found)
+    </div>
+    <ul class="g-list is-middle">
+        <li :key="index"
+            v-for="(Usage usage, index) in usages"
+            class="is-background-hover"
+            @click="onUsageSelect(usage)"
+        >
+            <div class="is-flex">
+                <div>
+                    <span>{{usage.className}}</span>
+                    <span class="has-horizontal-padding">{{usage.line}}</span>
+                </div>
+                <div class="is-flex-grow is-color-1">
+                    <span>{{usage.usageText}}</span>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

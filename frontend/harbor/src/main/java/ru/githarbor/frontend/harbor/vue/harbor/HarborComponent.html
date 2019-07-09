@@ -2,14 +2,31 @@
     <component :is="window" v-bind="windowProps"></component>
 
     <div class="is-flex is-vertical-centered is-padding has-bottom-border ">
-        <div>
-            <repository-info></repository-info>
-        </div>
         <div class="is-flex-grow has-text-centered">
             <repository-search></repository-search>
         </div>
         <div>
+            <ul class="g-list is-horizontal">
+                <li>
+                    <el-dropdown trigger="click">
+                        <span class="el-dropdown-link">
+                            <span class="icon is-background-hover has-round-2x-border">
+                            <fa-icon icon="ellipsis-v"></fa-icon>
+                            </span>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <div v-if="hasDark" class="is-padding has-bottom-border">
+                                <el-switch v-model="darkTheme"
+                                           :active-text='darkTheme ? "Light Theme" : "Dark Theme"'
+                                >
 
+                                </el-switch>
+                            </div>
+                            <el-dropdown-item>Log out</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -22,6 +39,8 @@
     <div class="is-flex is-centered has-top-border is-padding">
         <div>GitHub API limit requests {{formattedRateLimit}}</div>
         <div class="is-flex-grow"></div>
-        <div>Latest commit {{latestCommit}}</div>
+        <div>
+            <repository-info></repository-info>
+        </div>
     </div>
 </section>

@@ -32,7 +32,7 @@
                 <ul class="g-list is-mini is-unselectable">
                     <li :key="index"
                         v-for="(Item item, index) in items"
-                        :class='map(e("is-overflow-ellipses", true), e("is-background-color-6", index == itemIndex))'
+                        :class='map(e("is-overflow-ellipses", true), e("is-selected", index == itemIndex))'
                         ref="itemElements"
                         @click="onFileSelection(index)"
                     >
@@ -46,7 +46,7 @@
                     <li ref="loadMoreElement"
                         v-if="hasMoreItems"
                         @click="onLoadMore"
-                        :class='map(e("is-background-color-6", itemIndex == items.length))'
+                        :class='map(e("is-selected", itemIndex == items.length))'
                     >
                         <fa-icon v-if="loadingMore" icon="cog" spin size="1x"></fa-icon>
                         Load more...

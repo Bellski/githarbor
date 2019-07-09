@@ -1,0 +1,23 @@
+<section class="hero is-fullheight is-full-height">
+    <div v-if="resolving" class="hero-body is-flex is-centered">
+        <fa-icon icon="cog" spin size="2x"></fa-icon>
+        <span>
+            Loading file...
+        </span>
+    </div>
+    <div class="is-full-size is-flex-grow is-flex-gentle is-vertical" v-if="!resolving">
+        <div style="padding-top: 1rem; padding-bottom: 1rem;" class="hero-body is-flex is-horizontal-centered is-vertical">
+            <div class="is-full-size is-flex-grow is-flex is-vertical">
+                <div class="is-inline has-vertical-padding" style="margin-bottom: 0.5rem;">
+                    <div class="title is-5 is-inline">
+                        {{path}}
+                    </div>
+
+                    <el-button class="has-horizontal-margin" @click="onOpenRepository">Open Repository</el-button>
+                </div>
+                <java-viewer v-if="isJava" lang="java" :content="content" :offset-top="1.7"></java-viewer>
+                <source-viewer :lang="lang" :content="content" v-else></source-viewer>
+            </div>
+        </div>
+    </div>
+</section>

@@ -7,6 +7,7 @@ import elemental2.core.Global;
 import elemental2.dom.HTMLMetaElement;
 import io.reactivex.plugins.RxJavaPlugins;
 import jsinterop.base.Js;
+import ru.githarbor.frontend.github.client.GitHubGqlClient;
 import ru.githarbor.frontend.hello.dagger.DaggerHelloDaggerComponent;
 import ru.githarbor.shared.User;
 
@@ -18,8 +19,12 @@ public class HelloEntryPoint implements EntryPoint {
         RxJavaPlugins.setErrorHandler(throwable -> GWT.log("", throwable));
         VueGWT.initWithoutVueLib();
 
+        final User user = processUser();
+        final GitHubGqlClient gitHubGqClient = new GitHubGqlClient(user);
+
         DaggerHelloDaggerComponent.builder()
-                .user(processUser())
+                .user(user)
+                .gitHubGqlClient(gitHubGqClient)
                 .build()
                 .helloComponentFactory()
                 .create()

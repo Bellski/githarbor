@@ -1,6 +1,7 @@
 package ru.githarbor.frontend.harbor.core.github.core;
 
 import elemental2.core.JsObject;
+import elemental2.dom.DomGlobal;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.subjects.CompletableSubject;
@@ -158,17 +159,24 @@ public class Branch {
     }
 
     public File[] findFile(String query, String... extensions) {
+        return findFile(query,false, extensions);
+    }
+
+    public File[] findFile(String query, boolean exact, String... extensions) {
         final String queryLowerCase = query.toLowerCase();
 
         return Arrays.stream(files).filter(file -> {
             final String fileNameLowerCase = file.name.toLowerCase();
+            final boolean containsFile = exact ? file.name.equals(query) : fileNameLowerCase.contains(queryLowerCase);
 
             if (extensions.length > 0) {
-                return Arrays.asList(extensions)
-                        .contains(file.extension) && fileNameLowerCase.contains(queryLowerCase);
+                final boolean containsExtension = Arrays.asList(extensions)
+                        .contains(file.extension);
+
+                return containsExtension && containsFile;
             }
 
-            return fileNameLowerCase.contains(queryLowerCase);
+            return containsFile;
         })
                 .map(file -> new FileScore(file, queryLowerCase))
                 .sorted(Comparator.<FileScore>comparingInt(fileScore -> (int) fileScore.score).reversed())
@@ -195,5 +203,10 @@ public class Branch {
 
     public String[] getExtensions() {
         return extensions;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

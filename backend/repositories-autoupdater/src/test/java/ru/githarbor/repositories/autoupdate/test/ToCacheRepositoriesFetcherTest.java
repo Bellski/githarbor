@@ -12,9 +12,9 @@ import java.sql.SQLException;
 public class ToCacheRepositoriesFetcherTest {
 
     public void fetchRepositoriesTst() throws SQLException {
-        final String userName = "postgres";
+        final String userName = "githarbor";
         final String password = "1";
-        final String url = "jdbc:postgresql://localhost:5432/postgres";
+        final String url = "jdbc:postgresql://localhost:5432/githarbor";
 
         try (Connection conn = DriverManager.getConnection(url, userName, password)) {
             final DSLContext dsl = DSL.using(conn, SQLDialect.POSTGRES_10);
@@ -26,9 +26,9 @@ public class ToCacheRepositoriesFetcherTest {
     }
 
     public void getRepositoryCache() throws SQLException {
-        final String userName = "postgres";
+        final String userName = "githarbor";
         final String password = "1";
-        final String url = "jdbc:postgresql://localhost:5432/postgres";
+        final String url = "jdbc:postgresql://localhost:5432/githarbor";
 
         try (Connection conn = DriverManager.getConnection(url, userName, password)) {
             final DSLContext dsl = DSL.using(conn, SQLDialect.POSTGRES_10);

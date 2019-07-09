@@ -37,6 +37,9 @@ public class RecentRepositoriesComponent implements IsVueComponent, HasCreated {
 
     public RecentRepository[] allRepositories;
 
+    @Data
+    public double currentOverIndex = -1;
+
     @Override
     public void created() {
 
@@ -45,6 +48,17 @@ public class RecentRepositoriesComponent implements IsVueComponent, HasCreated {
 
         allRepositories = user.recentRepositories;
         repositories = allRepositories;
+
+        vue().$watch(() -> input, (newInput, oldInput) -> {
+            if (newInput.isEmpty()) {
+                repositories = allRepositories;
+
+                return;
+            }
+
+            repositories = Arrays.stream(allRepositories).filter(repository -> repository.name.contains(newInput))
+                    .toArray(RecentRepository[]::new);
+        });
     }
 
     @JsMethod
@@ -54,12 +68,12 @@ public class RecentRepositoriesComponent implements IsVueComponent, HasCreated {
 
     @JsMethod
     public void onNewWindow(String name) {
-        window.open("/github/" + name, "_blank");
+        window.open("/" + name, "_blank");
     }
 
     @JsMethod
     public void onThisWindow(String name) {
-        window.location.setHref("/github/" + name);
+        window.location.setHref("/" + name);
     }
 
     @JsMethod
@@ -71,5 +85,23 @@ public class RecentRepositoriesComponent implements IsVueComponent, HasCreated {
         repositories = allRepositories;
 
         userManager.deleteRecentRepository(name);
+    }
+
+    @JsMethod
+    public void onDeleteAll() {
+        allRepositories = new RecentRepository[0];
+        repositories = new RecentRepository[0];
+
+        userManager.deleteAllRecentRepositories();
+    }
+
+    @JsMethod
+    public void onMouseOver(double index) {
+        currentOverIndex = index;
+    }
+
+    @JsMethod
+    public void onMouseOut() {
+        currentOverIndex = -1;
     }
 }

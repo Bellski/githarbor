@@ -28,11 +28,6 @@ public class UserManagerTest {
         System.out.println(user);
     }
 
-    public void setTheme() {
-        final MainComponent component = DaggerMainComponent.create();
-        component.userManager().setTheme(1234, "dark");
-    }
-
 
     public void addFavoriteRepository() {
         final MainComponent component = DaggerMainComponent.create();
@@ -55,13 +50,15 @@ public class UserManagerTest {
     }
 
 
-    @Test
+
     public void createUiState() {
         final BranchState branchState = new BranchState();
         branchState.name = "master";
+        branchState.expandedNodes = new String[0];
+        branchState.activeOpenedFile = null;
 
         final UiState uiState = new UiState();
-        uiState.name = "vuejs/vue";
+        uiState.name = "vuejs/vue3";
         uiState.sideBarTabIndex = 1;
         uiState.sideBarTabContentWidth = 20;
         uiState.sideBarContentWidth = 80;
@@ -70,6 +67,7 @@ public class UserManagerTest {
 
         final MainComponent component = DaggerMainComponent.create();
 
-        component.userManager().selectUiState(1234, "vuejs/vue");
+
+//        component.userManager().createUiState(7370042, uiState);
     }
 }

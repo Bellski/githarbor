@@ -3,6 +3,7 @@ package ru.githarbor.frontend.harbor.vue.harbor.window.history.file.diff;
 import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.Prop;
+import com.axellience.vuegwt.core.annotations.component.Ref;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasBeforeDestroy;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
@@ -41,6 +42,9 @@ public class FileHistoryDiffComponent implements IsVueComponent, HasCreated, Has
 
     @Data
     public boolean loadingDiff = true;
+
+    @Ref
+    public SourceDiffComponent sourceDiff;
 
     private JsPropertyMap<DiffContentRequest.Data> diffByCommit = Js.cast(JsPropertyMap.of());
 
@@ -100,7 +104,9 @@ public class FileHistoryDiffComponent implements IsVueComponent, HasCreated, Has
 
 
     public void layout() {
-
+        if (sourceDiff != null) {
+            sourceDiff.layout();
+        }
     }
 
     @Override

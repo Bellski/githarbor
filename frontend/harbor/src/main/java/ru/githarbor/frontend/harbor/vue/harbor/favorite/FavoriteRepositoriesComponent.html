@@ -14,7 +14,7 @@
 
     <loader v-if="loading"></loader>
 
-    <div class="is-flex is-full-size" v-else>
+    <div v-if="!loading && repositories.length > 0" class="is-flex is-full-size">
         <repository-list :editable="true" :repositories="repositories" @delete="onRepositoryDelete"></repository-list>
     </div>
 </div>

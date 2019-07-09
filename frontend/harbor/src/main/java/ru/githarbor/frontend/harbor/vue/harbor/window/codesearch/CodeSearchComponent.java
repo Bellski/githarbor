@@ -11,6 +11,8 @@ import io.reactivex.disposables.Disposable;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import ru.githarbor.frontend.monaco.FindMatch;
+import ru.githarbor.frontend.monaco.Monaco;
 import ru.githarbor.frontend.harbor.core.github.core.File;
 import ru.githarbor.frontend.harbor.core.github.core.Repository;
 import ru.githarbor.frontend.harbor.core.github.request.CodeSearchRequest;
@@ -18,9 +20,7 @@ import ru.githarbor.frontend.harbor.core.state.HarborState;
 import ru.githarbor.frontend.harbor.elementui.ElInput;
 import ru.githarbor.frontend.harbor.jslib.HarborGlobal;
 import ru.githarbor.frontend.harbor.jslib.Languages;
-import ru.githarbor.frontend.harbor.jslib.monaco.FindMatch;
 import ru.githarbor.frontend.harbor.jslib.monaco.ITextModel;
-import ru.githarbor.frontend.harbor.jslib.monaco.Monaco;
 import ru.githarbor.frontend.harbor.jslib.monaco.MonacoFactory;
 import ru.githarbor.frontend.harbor.vue.harbor.window.codesearch.item.CodeSearchItem;
 import ru.githarbor.frontend.harbor.vue.harbor.window.codesearch.item.CodeSearchItemViewComponent;
@@ -262,21 +262,19 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasBefor
         }
 
         repository.getCurrentBranch().getFile(item.path).map(File::resolveContent).ifPresent(stringSingle -> stringSingle.subscribe(content -> {
-            monacoFactory.onReady().subscribe(() -> {
-                final ITextModel model = Monaco.createModel(content, "test");
-                final FindMatch[] matches = model.findMatches(input);
+            final ITextModel model = Js.cast(Monaco.createModel(content, "test"));
+            final FindMatch[] matches = model.findMatches(input);
 
-                item.matchLines = collectMatchLines(matches, model);
-                item.occurrences = matches.length;
-                item.resolved = true;
-                item.resolving = false;
+            item.matchLines = collectMatchLines(matches, model);
+            item.occurrences = matches.length;
+            item.resolved = true;
+            item.resolving = false;
 
-                vue().$nextTick(() -> {
-                    this.item = item;
-                });
-
-                model.dispose();
+            vue().$nextTick(() -> {
+                this.item = item;
             });
+
+            model.dispose();
         }));
     }
 
@@ -289,7 +287,7 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasBefor
             if (tempMap.containsKey(startLine)) {
                 tempMap.get(startLine).ranges.push(findMatch.getRange());
             } else {
-                final MatchLine matchLine = new MatchLine("", "", model.getLineContent(startLine), startLine);
+                final MatchLine matchLine = new MatchLine("", "", "", model.getLineContent(startLine), "", startLine);
                 matchLine.ranges.push(findMatch.getRange());
 
                 tempMap.put(startLine, matchLine);

@@ -31,6 +31,16 @@
   padding-bottom: $g-vertical-offset;
 }
 
+.has-horizontal-padding {
+  padding-left: $g-horizontal-offset;
+  padding-right: $g-horizontal-offset;
+}
+
+.has-horizontal-margin {
+  margin-left: $g-horizontal-offset !important;
+  margin-right: $g-horizontal-offset !important;
+}
+
 .is-margin-top-one {
   margin-top: 1px !important;
 }
@@ -68,6 +78,21 @@
   }
 }
 
+.is-background-hoverable {
+  &:hover {
+    background: $g-hover-color;
+  }
+}
+
+.is-selected {
+  background: $g-select-color;
+}
+
+.is-background-hover {
+  &:hover {
+    background: $g-hover-color;
+  }
+}
 
 .is-divider {
   margin: 0 $g-horizontal-offset;
@@ -83,4 +108,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.is-hover {
+  &:hover {
+    background: $g-hover-color;
+  }
 }

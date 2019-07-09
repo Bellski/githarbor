@@ -61,3 +61,9 @@
 .is-font-weight-700 {
   font-weight: 700;
 }
+
+.is-font-weight-600-hoverable {
+  &:hover {
+    font-weight: 600;
+  }
+}

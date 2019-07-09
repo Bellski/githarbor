@@ -29,8 +29,8 @@ jooq {
     harbor(sourceSets.main) {
         jdbc {
             driver = 'org.postgresql.Driver'
-            url = 'jdbc:postgresql://localhost:5432/postgres'
-            user = 'postgres'
+            url = 'jdbc:postgresql://localhost:5432/githarbor'
+            user = 'githarbor'
             password = '1'
         }
 

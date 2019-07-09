@@ -77,4 +77,8 @@ public class Repository {
         return info.inFavorite = !info.inFavorite;
     }
 
+    @Override
+    public String toString() {
+        return info.nameWithOwner.ownerWithName;
+    }
 }

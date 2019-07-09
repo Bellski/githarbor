@@ -2,6 +2,9 @@
   flex-grow: 1;
   display: flex;
   height: auto;
+
+  -webkit-transition: unset;
+  transition: unset;
 }
 
 .splitpanes__splitter {

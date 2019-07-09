@@ -16,4 +16,8 @@ include 'frontend:vue-components'
 findProject(':frontend:vue-components')?.name = 'vue-components'
 include 'frontend:harbor'
 findProject(':frontend:harbor')?.name = 'harbor'
+include 'frontend:file-viewer'
+findProject(':frontend:file-viewer')?.name = 'file-viewer'
+include 'frontend:gsi'
+findProject(':frontend:gsi')?.name = 'gsi'
 

@@ -1,0 +1,90 @@
+@import '~monaco-editor/min/vs/editor/editor.main.css';
+
+@import "../../../../harbor-theme/src/harbor-variables";
+@import "../../../../harbor-theme/src/css/harbor-elements";
+@import "../../../../harbor-theme/src/css/helpers";
+@import "../../../../harbor-theme/src/css/place-holders";
+@import "../../../../harbor-theme/src/css/responsive-helpers";
+@import "../../../../harbor-theme/src/css/typography";
+@import "../../../../harbor-theme/src/vue/harbor-vue-components";
+
+
+
+@import "../../../../harbor-theme/src/vendors/element-ui/element-ui-variable";
+
+@import "~element-ui/packages/theme-chalk/src/tabs";
+@import "~element-ui/packages/theme-chalk/src/tab-pane";
+@import "~element-ui/packages/theme-chalk/src/button";
+
+
+@import "../../../../harbor-theme/src/vendors/element-ui/element-ui";
+
+
+@import "../../../../harbor-theme/src/vendors/bulma/bulma-variables";
+
+@import "~bulma/bulma";
+
+@import "../../../../harbor-theme/src/vendors/bulma/bulma";
+
+
+@import "../../../../harbor-theme/src/common";
+
+@import "~monaco-editor/min/vs/editor/editor.main.css";
+
+body {
+  overflow: hidden;
+  height: 100%;
+  font-size: $g-font-size;
+}
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+
+.scroll-decoration {
+  display: none;
+}
+
+.monaco-editor {
+  .find-widget {
+    border: $g-border;
+    box-shadow: none !important;
+  }
+
+  .find-widget {
+    background-color: $g-primary-color !important;
+  }
+}
+
+
+.monaco-scrollable-element {
+  box-shadow: none !important;
+  border: $g-border;
+}
+
+.monaco-menu {
+  .monaco-action-bar {
+    &.vertical {
+      border-left: none;
+      border-top: $g-border;
+      border-right: $g-border;
+      border-bottom: $g-border;
+
+      .action-menu-item {
+        height: 22px;
+        font-size: $g-font-size;
+      }
+    }
+  }
+}
+.monaco-scrollable-element {
+  border-left: $g-border;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.monaco-editor .margin {
+  border-top: none;
+}

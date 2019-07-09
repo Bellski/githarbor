@@ -7,7 +7,7 @@
         <ul class="g-list is-unselectable">
             <li :key="node.oid" v-for="(Node node, index) in commits"
                 @click="onCommitClick(index, node)"
-                :class='map(e("is-background-color-6", index == commitIndex))'
+                :class='map(e("is-selected", index == commitIndex))'
             >
                 <div class="is-font-weight-700">{{node.message}}</div>
                 <div class="is-fontsize-medium">
@@ -19,7 +19,7 @@
             </li>
 
             <li v-if="loadMore"
-                :class='map(e("is-background-color-6", commits.length == commitIndex))'
+                :class='map(e("is-selected", commits.length == commitIndex))'
                 @click="onLoadMore"
             >
                 <loader v-if="loadingMore" class="is-inline"></loader>

@@ -1,8 +1,33 @@
 .el-tabs.el-tabs--card {
 
+  &.el-tabs--bottom {
+    > .el-tabs__header {
+      border-bottom: none;
+      border-top: $g-border;
+    }
+  }
+
+  &.is-flex {
+    flex-direction: column;
+    height: 100%;
+
+    .el-tabs__content {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      height: 100%;
+
+      .el-tab-pane {
+        flex-grow: 1;
+        height: 100%;
+      }
+    }
+  }
+
   & > .el-tabs__header {
     background: $--background-color-base;
     margin: 0;
+    border-bottom: $g-border;
   }
 
   & > .el-tabs__header .el-tabs__nav {
@@ -11,15 +36,17 @@
 
   .el-tabs__item {
     height: 28px;
-    line-height: 28px;
+    line-height: 27px;
     padding: 0 $g-horizontal-offset;
     transition: unset;
     font-size: $g-font-size;
     font-weight: normal;
+    border: 1px solid transparent;
+    color: $g-color-1;
 
     &:last-child {
       padding-right: $g-horizontal-offset !important;
-      border-right: none;
+      border-right-color: transparent;
     }
 
     &:nth-child(2) {
@@ -27,16 +54,22 @@
     }
 
     &.is-active:last-child {
-      border-right: $g-border;
+      border-right-color: $g-border-primary-color;
     }
 
     &.is-active {
-      background: $g-work-space-color;
+      background: $g-active-tab-fill;
       color: inherit;
+      border-left-color: $g-border-primary-color;
+      border-right-color: $g-border-primary-color;
 
       &.is-closable {
         padding-left: $g-horizontal-offset !important;
         padding-right: $g-horizontal-offset !important;
+      }
+
+      &:nth-child(1) {
+        border-left-color: transparent;
       }
     }
 
@@ -64,6 +97,12 @@
   &.is-borderless {
     .el-input__inner {
       border: none;
+    }
+  }
+
+  .el-input-group__prepend {
+    .el-input:hover {
+      border: 1px solid transparent;
     }
   }
 
@@ -130,7 +169,20 @@
     line-height: 22px;
 
     padding: 0 $g-horizontal-offset;
+
+    &.selected {
+      background: $g-hover-color !important;
+    }
+
+    &.hover,
+    &:hover {
+      background: transparent;
+    }
   }
+}
+
+.el-select-dropdown__list {
+  padding: 0;
 }
 
 .el-select {
@@ -269,4 +321,30 @@
 
 }
 
+.el-dropdown-menu--mini {
+  transform: none !important;
+  transition: none !important;
+
+  border: $g-border;
+  margin-top: 2px !important;
+  background: $g-primary-color;
+  padding: 0;
+
+  .el-dropdown-menu__item {
+    line-height: 22px;
+    padding: 0 $g-horizontal-offset;
+  }
+
+  .el-dropdown-menu__item--divided {
+    border-top: $g-border;
+  }
+}
+
+.el-switch__core {
+  height: 18px;
+
+  &:after {
+    top:0;
+  }
+}
 

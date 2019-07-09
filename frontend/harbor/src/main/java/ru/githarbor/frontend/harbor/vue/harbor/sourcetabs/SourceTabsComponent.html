@@ -1,23 +1,42 @@
 <vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.data.SourceTab"/>
+<vue-gwt:import class="elemental2.dom.MouseEvent"/>
 
 <div class="is-full-height">
 
     <template v-if="!switchingBranch">
-        <read-me v-if="showReadme"></read-me>
+        <context-menu :actions="contextMenuActions" :position="contextMenuPosition"></context-menu>
+
+        <readme v-if="showReadme"></readme>
 
         <el-tabs type="card"
                  class="g-source-tabs"
-                 v-else
                  v-model="activeTab"
                  @tab-remove="onTabRemove"
                  closable
+                 v-else
         >
             <el-tab-pane v-for="SourceTab sourceTab in tabs"
                          :key="sourceTab.key"
                          :label="sourceTab.name"
                          :name="sourceTab.key"
             >
-                <source-view :source="sourceTab"></source-view>
+
+                <div class="is-inline-block" slot="label">
+                    <div style="position: absolute; top: 0; left: 0;"
+                         class="is-full-size"
+                         @contextmenu="handleContextMenu((MouseEvent) $event, sourceTab)"
+                         @click.middle="onTabRemove(sourceTab.key)"
+                    >
+
+                    </div>
+                    {{sourceTab.name}}
+                </div>
+
+                <image-view v-if="isImage(sourceTab)" :source="sourceTab"></image-view>
+                <svg-view v-if="isSvg(sourceTab)" :source="sourceTab"></svg-view>
+                <markdown-view v-if="isMarkdown(sourceTab)" :source="sourceTab"></markdown-view>
+                <java-source-view v-if="isJava(sourceTab)" :source="sourceTab"></java-source-view>
+                <source-view :source="sourceTab" v-else></source-view>
             </el-tab-pane>
         </el-tabs>
     </template>

@@ -3,13 +3,17 @@
 
 <div style="width: 100%; height: 100%">
     <el-dialog v-if="visibleDiff"
+               ref="diffDialog"
                top="0"
                :visible="true"
                width="99%"
                :modal="false"
                class="el-is-body-padingless el-is-shadowless el-is-has-borders is-height-99p is-flex-centered"
                :close-on-click-modal="false"
-               @close="onDiffClose">
+               @opened="onDiffOpen"
+               @close="onDiffClose"
+               append-to-body
+    >
 
         <span slot="title">{{commitFile.name}}</span>
 
@@ -22,6 +26,7 @@
 
     <simple-bar style="width:100%; height:100%;" v-else>
         <el-tree class="g-directory-history-tree"
+                 ref="treeComponent"
                  :data="commitFiles"
                  :highlight-current="true"
                  default-expand-all

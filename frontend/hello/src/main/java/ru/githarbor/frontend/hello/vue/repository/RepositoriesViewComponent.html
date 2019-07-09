@@ -1,10 +1,10 @@
 <div>
-    <el-tabs type="card">
-        <el-tab-pane label="Favorites" name="favorites">
-
+    <el-tabs type="card" class="is-flex" v-model="tab">
+        <el-tab-pane v-if="isTier1User" label="Favorites" name="favorites">
+            <favorite-repositories></favorite-repositories>
         </el-tab-pane>
         <el-tab-pane label="Recent" name="recent">
-
+            <recent-repositories></recent-repositories>
         </el-tab-pane>
     </el-tabs>
 </div>

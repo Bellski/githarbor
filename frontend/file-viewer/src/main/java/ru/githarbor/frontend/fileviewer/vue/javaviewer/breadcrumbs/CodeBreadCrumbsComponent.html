@@ -1,0 +1,13 @@
+<vue-gwt:import class="ru.githarbor.frontend.fileviewer.vue.javaviewer.breadcrumbs.CodeBreadCrumb"/>
+
+<div class="is-padding is-primary-background has-top-border" style="height: 26px">
+    <ul class="g-list is-horizontal is-unselectable">
+        <li :key="index"
+            v-for="(CodeBreadCrumb breadCrumb, index) in breadCrumbs"
+            :class='map(e("is-font-weight-600", index == currentIndex), e("is-font-weight-600-hoverable", true))'
+            @click="onBreadCrumbSelect(breadCrumb, index)"
+        >
+            {{breadCrumb.name}}
+        </li>
+    </ul>
+</div>

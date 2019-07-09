@@ -5,8 +5,10 @@ import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasBeforeDestroy;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasMounted;
+import com.axellience.vuegwt.core.client.component.options.functions.OnEvent;
 import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.EventListener;
 import elemental2.dom.HTMLElement;
 import io.reactivex.disposables.Disposable;
 import jsinterop.annotations.JsMethod;
@@ -17,10 +19,13 @@ import ru.githarbor.frontend.harbor.core.github.request.CodeSearchRequest;
 import ru.githarbor.frontend.harbor.core.github.request.FileContentRequest;
 import ru.githarbor.frontend.harbor.core.state.HarborState;
 import ru.githarbor.frontend.harbor.elementui.ElInput;
+import ru.githarbor.frontend.harbor.event.Events;
 import ru.githarbor.frontend.harbor.jslib.HarborGlobal;
 import ru.githarbor.frontend.harbor.jslib.Languages;
-import ru.githarbor.frontend.harbor.jslib.monaco.*;
-import ru.githarbor.frontend.harbor.jslib.monaco.editor.IEditor;
+import ru.githarbor.frontend.harbor.jslib.MyKeyboardEvent;
+import ru.githarbor.frontend.monaco.*;
+import ru.githarbor.frontend.monaco.editor.IEditor;
+import ru.githarbor.frontend.harbor.jslib.monaco.MonacoFactory;
 import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.SourceTabsSharedState;
 import ru.githarbor.frontend.harbor.vue.harbor.window.codesearch.Extension;
 import ru.githarbor.frontend.harbor.vue.harbor.window.codesearch.item.MatchLine;
@@ -38,6 +43,9 @@ import static elemental2.dom.DomGlobal.setTimeout;
         LoaderComponent.class
 })
 public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMounted, HasBeforeDestroy {
+
+    @Inject
+    public LanguageExtensionPoints languageExtensionPoints;
 
     @Inject
     public SourceTabsSharedState sourceTabsSharedState;
@@ -120,12 +128,22 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
 
     private double inputInterval;
 
+    private HTMLElement elBodyElement;
+    private EventListener keyDownListener;
+
+    private OnEvent onWindowResized;
+
     @JsMethod
     public void onClose() {
         harborState.window = null;
     }
 
     private Disposable rateLimitObservation;
+
+    @Computed
+    public String getTitle() {
+        return directory != null ? directory : repository.info.nameWithOwner.name;
+    }
 
     @Computed
     public Extension[] getExtensions() {
@@ -154,6 +172,12 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
 
     @Override
     public void created() {
+        vue().$root().vue().$on(Events.WINDOW_RESIZED, onWindowResized = parameter -> {
+            if (monaco != null) {
+                monaco.layout();
+            }
+        });
+
         if (codeSearchRequest.getRateLimit() != null) {
             queryLimitRemaining = codeSearchRequest.getRateLimit().remaining;
             queryLimitResetAt = HarborGlobal.timeAgo(Long.valueOf(codeSearchRequest.getRateLimit().resetAt) * 1000);
@@ -172,6 +196,7 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
         vue().$watch(() -> input, (newInput, oldInput) -> search(newInput, 600));
 
         vue().$watch(() -> extension, (newValue, oldValue) -> search(input, 0));
+
     }
 
     private void search(String input, double delay) {
@@ -225,24 +250,22 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
                             .toArray(String[]::new);
 
                     repository.getCurrentBranch().resolvePaths(paths).subscribe(files -> {
-                        monacoFactory.onReady().subscribe(() -> {
-                            for (File file : files) {
-                                final ITextModel model = Monaco.createModel(file.getContent(), "text");
-                                final FindMatch[] matches = model.findMatches(input);
+                        for (File file : files) {
+                            final ITextModel model = Monaco.createModel(file.getContent(), "text");
+                            final FindMatch[] matches = model.findMatches(input);
 
-                                matchLines.push(collectMatchLines(file, matches, model));
+                            matchLines.push(collectMatchLines(file, matches, model));
 
-                                model.dispose();
+                            model.dispose();
+                        }
+
+                        searching = false;
+                        visibleResult = true;
+
+                        vue().$nextTick(() -> {
+                            if (matchLines.length > 0) {
+                                onMatchLineSelect(matchLineIndex, getCurrentMatchLine());
                             }
-
-                            searching = false;
-                            visibleResult = true;
-
-                            vue().$nextTick(() -> {
-                                if (matchLines.length > 0) {
-                                    onMatchLineSelect(matchLineIndex, getCurrentMatchLine());
-                                }
-                            });
                         });
                     });
                 }
@@ -259,7 +282,14 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
             if (tempMap.containsKey(startLine)) {
                 tempMap.get(startLine).ranges.push(findMatch.getRange());
             } else {
-                final MatchLine matchLine = new MatchLine(file.name, file.getPath(), model.getLineContent(startLine), startLine);
+                final MatchLine matchLine = new MatchLine(
+                        file.name,
+                        file.getPath(),
+                        languageExtensionPoints.getLanguageFromFileName(file.name),
+                        model.getLineContent(startLine),
+                        input,
+                        startLine
+                );
                 matchLine.ranges.push(findMatch.getRange());
 
                 tempMap.put(startLine, matchLine);
@@ -271,6 +301,22 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
 
     @Override
     public void mounted() {
+        vue().$nextTick(() -> {
+            elBodyElement = vue().<HTMLElement>$el();
+
+            elBodyElement.setAttribute("tabindex", 0);
+            elBodyElement.addEventListener("keydown", keyDownListener = evt -> {
+                final MyKeyboardEvent myKeyboardEvent = Js.cast(evt);
+
+                if (myKeyboardEvent.getKeyCode() == 27) {
+                    if (Arrays.asList(evt.path).contains(elBodyElement)) {
+                        onClose();
+                    }
+                }
+            });
+
+        });
+
         vue().$nextTick(() -> inputElement.focus());
     }
 
@@ -282,7 +328,7 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
                         monaco = monacoFactory.create(monacoContainer);
                         monaco.setModel(monacoFactory.initModel(matchLine.fileName, content));
 
-                        revealMathLine(matchLine);
+                        revealMatchLine(matchLine);
 
                         monaco.layout();
 
@@ -295,7 +341,7 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
         }
 
         if (matchLine.filePath.equals(getCurrentMatchLine().filePath)) {
-            revealMathLine(matchLine);
+            revealMatchLine(matchLine);
 
             this.matchLineIndex = index;
 
@@ -306,7 +352,7 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
             monaco.getModel().dispose();
             monaco.setModel(monacoFactory.initModel(matchLine.fileName, content));
 
-            revealMathLine(matchLine);
+            revealMatchLine(matchLine);
 
             monaco.layout();
 
@@ -360,7 +406,7 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
         });
     }
 
-    private void revealMathLine(MatchLine matchLine) {
+    private void revealMatchLine(MatchLine matchLine) {
         if (monaco != null) {
             monaco.setPosition(Position.create(matchLine.line, 1));
             monaco.revealLineInCenter(matchLine.line);
@@ -407,10 +453,15 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
 
     @Override
     public void beforeDestroy() {
+        vue().$root().vue().$off(Events.WINDOW_RESIZED, onWindowResized);
+
         if (rateLimitObservation != null) {
             rateLimitObservation.dispose();
         }
 
         disposeMonaco();
+
+        elBodyElement.removeEventListener("keydown", keyDownListener);
+        elBodyElement = null;
     }
 }

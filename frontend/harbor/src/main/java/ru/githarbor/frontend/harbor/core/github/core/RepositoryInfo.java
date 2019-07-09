@@ -18,4 +18,9 @@ public class RepositoryInfo {
         stars = repository.stars;
         this.inFavorite = inFavorites;
     }
+
+    @Override
+    public String toString() {
+        return nameWithOwner.ownerWithName;
+    }
 }

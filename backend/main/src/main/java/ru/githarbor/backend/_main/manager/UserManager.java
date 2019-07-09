@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static org.jooq.impl.DSL.*;
-import static ru.githarbor.backend.db.tables.Themes.THEMES;
 import static ru.githarbor.backend.db.tables.Users.USERS;
 
 
@@ -31,14 +30,13 @@ public class UserManager {
     public User getUser(long ghId) {
         final Field<JsonElement> recent = field("{0}->'repositories'", USERS.RECENT_REPOSITORIES.getType(), USERS.RECENT_REPOSITORIES).as("recent_repositories");
 
-        return dsl.select(USERS.ID, THEMES.NAME.as("theme"), USERS.TIER2_BACKER, USERS.TIER1_BACKER, USERS.FAVORITE_REPOSITORIES, recent)
+        return dsl.select(USERS.ID, USERS.DARK_THEME, USERS.TIER2_BACKER, USERS.TIER1_BACKER, USERS.FAVORITE_REPOSITORIES, recent)
                 .from(USERS)
-                .join(THEMES).on(USERS.THEME_ID.eq(THEMES.ID))
                 .where(USERS.ID.eq(ghId))
                 .fetchOne(record -> {
                     final User user = new User();
                     user.id = record.get(USERS.ID);
-                    user.theme = record.get(THEMES.NAME.as("theme"));
+                    user.darkTheme = record.get(USERS.DARK_THEME);
                     user.tier2Backer = record.get(USERS.TIER2_BACKER);
                     user.tier1Backer = record.get(USERS.TIER1_BACKER);
                     user.favoriteRepositories = record.get(USERS.FAVORITE_REPOSITORIES);
@@ -58,13 +56,9 @@ public class UserManager {
         return dsl.fetchExists(selectOne().from(USERS).where(USERS.ID.eq(ghId)));
     }
 
-    public void setTheme(long id, String name) {
+    public void setTheme(long id, boolean dark) {
         dsl.update(USERS)
-                .set(
-                        USERS.THEME_ID,
-                        select(THEMES.ID).from(THEMES)
-                                .where(THEMES.NAME.eq(name))
-                )
+                .set(USERS.DARK_THEME, dark)
                 .where(USERS.ID.eq(id))
                 .execute();
     }
@@ -183,6 +177,13 @@ public class UserManager {
         query.execute();
     }
 
+    public void deleteAllRecentRepositories(long userId) {
+        dsl.update(USERS)
+                .set(USERS.RECENT_REPOSITORIES, new JsonObject())
+                .where(USERS.ID.eq(userId))
+                .execute();
+    }
+
     public void createUiState(long userId, UiState uiState) {
         final Field<JsonElement> concat = field(
                 "COALESCE({0}, '[]') || {1}::jsonb",
@@ -222,7 +223,7 @@ public class UserManager {
         return query.execute();
     }
 
-    public void selectUiState(long userId, String name) {
+    public UiState getUiState(long userId, String name) {
         final Field<JsonElement> repository_ui_state = field("repository_ui_state", USERS.REPOSITORIES_UI_STATE.getType());
         final Field<Integer> index = field("index - 1", Integer.class).as("index");
         final Table<Record> jsonb_array_elements = table("jsonb_array_elements({0}) WITH ORDINALITY arr({1}, {2})", USERS.REPOSITORIES_UI_STATE, repository_ui_state, index);
@@ -233,7 +234,10 @@ public class UserManager {
 
         final Record2<JsonElement, Integer> result = query.fetchOne();
 
-        System.out.println(new Gson().fromJson(result.get(repository_ui_state), UiState.class));
-    }
+        if (result == null) {
+            return null;
+        }
 
+        return new Gson().fromJson(result.get(repository_ui_state), UiState.class);
+    }
 }

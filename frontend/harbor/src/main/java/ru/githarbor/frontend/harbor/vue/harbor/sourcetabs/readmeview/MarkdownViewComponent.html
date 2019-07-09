@@ -1,0 +1,25 @@
+<div class="is-full-size is-flex is-centered is-primary-background">
+    <loader v-if="loading" text="Loading svg..."></loader>
+
+    <el-tabs type="card"
+             class="is-flex is-full-size"
+             v-model="activeTab"
+             tabPosition="bottom"
+             v-else
+    >
+        <el-tab-pane label="Render" name="render">
+            <div class="is-flex is-vertical is-vertical-centered is-full-size has-vertical-padding">
+                <div class="is-flex is-full-height is-workspace has-round-borders has-borders" style="width: 980px;">
+                    <simple-bar class="is-full-size">
+                        <mark-down :file="source.key"></mark-down>
+                    </simple-bar>
+                </div>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="Source" name="source">
+            <div ref="monacoContainer" class="is-flex is-full-size">
+
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+</div>

@@ -1,9 +1,7 @@
 package ru.githarbor.frontend.harbor.core.rpc;
 
-import ru.githarbor.shared.rpc.AddFavoriteRepository;
-import ru.githarbor.shared.rpc.AddRecentRepository;
-import ru.githarbor.shared.rpc.DeleteFavoriteRepository;
-import ru.githarbor.shared.rpc.DeleteRecentRepository;
+import ru.githarbor.shared.UiState;
+import ru.githarbor.shared.rpc.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -32,5 +30,17 @@ public class UserManagerRpcClient {
 
     public void deleteRecentRepository(String name) {
         client.execute("/user/user-manager", new DeleteRecentRepository(name));
+    }
+
+    public void deleteAllRecentRepositories() {
+        client.execute("/user/user-manager", new DeleteAllRecentRepositories());
+    }
+
+    public void setTheme(boolean dark) {
+        client.execute("/user/user-manager", new SetThemeRequest(dark));
+    }
+
+    public void updateUiState(UiState uiState) {
+        client.execute("/user/user-manager", new CreateUiStateRequest(uiState));
     }
 }

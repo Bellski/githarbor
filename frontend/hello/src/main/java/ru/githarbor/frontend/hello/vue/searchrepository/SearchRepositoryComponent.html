@@ -1,15 +1,18 @@
+<vue-gwt:import class="ru.githarbor.request.RepositorySearchRequest.Repository"/>
+
 <div class="is-flex is-vertical is-fullheight">
 
-    <el-input v-model="input"
-              class="g-search-repository-input"
-              placeholder="Enter repository name or GitHub url"
-              autofocus
-    >
-        <fa-icon slot="suffix" icon="search"></fa-icon>
-    </el-input>
+    <div class="is-flex has-bottom-border">
+        <el-input v-model="input"
+                  placeholder="Enter repository name or GitHub url"
+                  class="is-borderless g-repository-search-input"
+                  autofocus
+        >
+            <fa-icon slot="suffix" icon="search"></fa-icon>
+        </el-input>
+    </div>
 
-
-    <loader v-if="searching"></loader>
+    <loader v-if="searching" text="Searching..."></loader>
 
     <div class="is-flex is-vertical is-fullheight is-centered" v-if="!searching && repositories.length == 0">
         Nothing found
@@ -18,7 +21,6 @@
     <div v-if="!searching && repositories.length > 0"
          class="is-flex is-fullheight"
     >
-
-        <search-repository-result :repositories="repositories"></search-repository-result>
+        <repository-list :open-new-window="false" :repositories="repositories"></repository-list>
     </div>
 </div>

@@ -7,18 +7,22 @@ import com.axellience.vuegwt.core.annotations.component.Ref;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasDestroyed;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.MouseEvent;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import ru.githarbor.frontend.harbor.core.Copy;
 import ru.githarbor.frontend.harbor.core.github.core.Branch;
+import ru.githarbor.frontend.harbor.core.github.core.File;
 import ru.githarbor.frontend.harbor.core.github.core.Repository;
 import ru.githarbor.frontend.harbor.core.state.HarborState;
 import ru.githarbor.frontend.harbor.elementui.ElTree;
 import ru.githarbor.frontend.harbor.elementui.TreeNode;
 import ru.githarbor.frontend.harbor.elementui.TreeNodeResolver;
+import ru.githarbor.frontend.harbor.jslib.ClipBoard;
 import ru.githarbor.frontend.harbor.jslib.MyKeyboardEvent;
 import ru.githarbor.frontend.harbor.vue.component.menu.Action;
 import ru.githarbor.frontend.harbor.vue.component.menu.ContextMenuComponent;
@@ -26,17 +30,21 @@ import ru.githarbor.frontend.harbor.vue.component.menu.Position;
 import ru.githarbor.frontend.harbor.vue.harbor.repository.branchselect.BranchSelectComponent;
 import ru.githarbor.frontend.harbor.vue.harbor.repository.data.RepositoryTreeNode;
 import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.SourceTabsSharedState;
+import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.SourceTabsState;
 import ru.githarbor.frontend.harbor.vue.harbor.window.codesearch2.CodeSearchWindow;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.dir.DirectoryHistoryWindow;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.file.FileHistoryWindow;
+import ru.githarbor.shared.BranchState;
 import ru.githarbor.shared.User;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
 import static elemental2.dom.DomGlobal.document;
+import static elemental2.dom.DomGlobal.fetch;
 
 @Component(components = {
         BranchSelectComponent.class,
@@ -78,22 +86,21 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
     @Data
     public Position contextMenuPosition;
 
+    @Data
+    public TreeState currentTreeState;
+
     @Ref
     public ElTree treeComponent;
 
     private Map<String, TreeState> treeStateByBranch = new HashMap<>();
 
-    public TreeState currentTreeState;
+    private String defaultSelectKey;
 
     @Override
     public void created() {
         contextMenuActions = new Action[] {
-                new Action("Copy", () -> {
-
-                }),
-                new Action("Copy URL", () -> {
-
-                }),
+                new Action("Copy", "Ctrl + C", this::copyTreeNodeNameToClipBoard),
+                new Action("Copy URL","Ctrl + Shift + C", this::copyFileUrlToClipBoard),
                 new Action("Search code", () -> {
                     harborState.window = new CodeSearchWindow(treeComponent.getCurrentNode().key);
                 }),
@@ -110,6 +117,19 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
 
         repositoryTreeComponentApi.setApi(this);
         treeStateByBranch.put(repository.getCurrentBranch().name, currentTreeState = new TreeState());
+
+        if (user.tier1Backer) {
+            final String[] expandedNodes = user.uiState.getBranchState().expandedNodes;
+            final String selectedNode = user.uiState.getBranchState().selectedNode;
+
+            if (expandedNodes != null) {
+                currentTreeState.expandedNodes.addAll(Arrays.asList(expandedNodes));
+            }
+
+            if (selectedNode != null) {
+                defaultSelectKey = selectedNode;
+            }
+        }
     }
 
     @Computed
@@ -127,20 +147,29 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
         return repositoryTreeSharedState.inFavorites;
     }
 
+    @Computed
+    public String[] getExpandedNodeKeys() {
+        return currentTreeState.expandedNodes.toArray(new String[0]);
+    }
+
     @JsMethod
     public void resolveTreeNodes(TreeNode<RepositoryTreeNode> node, TreeNodeResolver<RepositoryTreeNode> resolver) {
         final RepositoryTreeNode[] resolved = repositoryTreeNodeLoader.resolveTreeNodes(node, resolver);
 
         vue().$nextTick(() -> {
             if (node.data == null && treeComponent.getCurrentKey() == null) {
-                treeComponent.setCurrentKey(resolved[0].key);
+                String toSelect = defaultSelectKey != null ? defaultSelectKey : resolved[0].key;
+                treeComponent.setCurrentKey(toSelect);
+
+                vue().$nextTick(() -> {
+                    scrollToNearestNode(treeComponent.getNode(toSelect));
+                });
             }
         });
     }
 
     @JsMethod
     protected void onKeyNavigation(Event evt) {
-        evt.stopPropagation();
 
         final MyKeyboardEvent keyboardEvent = Js.cast(evt);
         final int keyCode = keyboardEvent.getKeyCode();
@@ -149,6 +178,8 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
 
         switch (keyCode) {
             case 38: { //up
+                evt.preventDefault();
+
                 TreeNode<RepositoryTreeNode> nodeToSelect = treeNode.previousSibling;
 
                 if (nodeToSelect == null && treeNode.parent.key != null) {
@@ -165,6 +196,8 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
             }
             break;
             case 40: {// down
+                evt.preventDefault();
+
                 final TreeNode<RepositoryTreeNode> nodeToSelect;
 
                 if (treeNode.expanded) {
@@ -183,6 +216,8 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
             }
             break;
             case 37: { //left
+                evt.preventDefault();
+
                 TreeNode<RepositoryTreeNode> nodeToSelect = null;
 
                 if (treeNode.isLeaf) {
@@ -219,6 +254,8 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
             }
             break;
             case 39: { // right
+                evt.preventDefault();
+
                 TreeNode<RepositoryTreeNode> nodeToSelect = null;
 
                 if (treeNode.isLeaf) {
@@ -253,7 +290,15 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
             }
             break;
             case 13: {
+                evt.preventDefault();
+
                 if (treeNode.isLeaf) {
+                    final File file = repository
+                            .getCurrentBranch()
+                            .getFile(treeNode.key)
+                            .get();
+
+                    sourceTabsSharedState.addSourceTab(file);
 
                 } else {
                     if (treeNode.expanded) {
@@ -261,6 +306,22 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
                     } else {
                         expandNode(treeNode);
                     }
+                }
+            }
+            break;
+            case 67: {
+                evt.preventDefault();
+
+                if (keyboardEvent.ctrlKey && treeComponent.getCurrentNode().leaf) {
+                    keyboardEvent.preventDefault();
+
+                    if (keyboardEvent.shiftKey) {
+                        copyFileUrlToClipBoard();
+
+                        return;
+                    }
+
+                    copyTreeNodeNameToClipBoard();
                 }
             }
         }
@@ -279,11 +340,15 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
                 currentTreeState.expandedNodes.remove(toCollapseKey);
             }
         }
+
+        user.uiState.getBranchState().expandedNodes = currentTreeState.expandedNodes.toArray(new String[0]);
     }
 
     @JsMethod
     public void onNodeExpand(RepositoryTreeNode repositoryTreeNode, TreeNode<RepositoryTreeNode> treeNode) {
         currentTreeState.expandedNodes.add(treeNode.key);
+
+        user.uiState.getBranchState().expandedNodes = currentTreeState.expandedNodes.toArray(new String[0]);
     }
 
     @JsMethod
@@ -329,11 +394,15 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
 
             treeComponent.setCurrentKey(key);
 
-            scrollToNearestNode(nodeToReveal);
-
             if (!nodeToReveal.isLeaf) {
                 nodeToReveal.expand();
             }
+
+            vue().$nextTick(() -> {
+                document.getElementById(nodeToReveal.key).scrollIntoView(Element.ScrollIntoViewTopUnionType.of(
+                        JsPropertyMap.of("block", "center")
+                ));
+            });
         });
     }
 
@@ -345,11 +414,15 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
             final Branch newBranch = repository.setCurrentBranch(branchName);
 
             if (newBranch.isResolved()) {
-                currentTreeState = treeStateByBranch.computeIfAbsent(branchName, key -> new TreeState());
+                harborState.currentBranch = branchName;
+
+                currentTreeState = treeStateByBranch.get(branchName);
+
+                if (user.tier1Backer) {
+                    user.uiState.currentBranch = branchName;
+                }
 
                 resolvingBranch = false;
-
-                harborState.currentBranch = branchName;
             } else {
                 newBranch.resolve(message -> {
                     switch (message) {
@@ -367,19 +440,51 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
                             break;
                     }
                 }).subscribe(() -> {
-                    resolvingBranch = false;
+                    currentTreeState = treeStateByBranch.computeIfAbsent(branchName, key -> new TreeState());
 
                     harborState.currentBranch = branchName;
+
+                    if (user.tier1Backer) {
+                        BranchState branchState = user.uiState.getBranchState();
+
+                        if (branchState == null) {
+                            branchState = new BranchState();
+                            branchState.name = branchName;
+
+                            user.uiState.addBranch(branchState);
+                        }
+
+                        user.uiState.currentBranch = branchName;
+
+                        final String[] expandedNodes = user.uiState.getBranchState().expandedNodes;
+                        final String selectedNode = user.uiState.getBranchState().selectedNode;
+
+                        if (expandedNodes != null) {
+                            currentTreeState.expandedNodes.addAll(Arrays.asList(expandedNodes));
+                        }
+
+                        if (selectedNode != null) {
+                            defaultSelectKey = selectedNode;
+                        }
+                    }
+
+                    resolvingBranch = false;
                 });
             }
         });
     }
 
     @JsMethod
-    public void onFileDoubleClick(RepositoryTreeNode repositoryTreeNode) {
-        repository.getCurrentBranch()
-                .getFile(repositoryTreeNode.key)
-                .ifPresent(file -> sourceTabsSharedState.addSourceTab(file));
+    public void onNodeClick(RepositoryTreeNode repositoryTreeNode) {
+        if (user.tier1Backer) {
+            user.uiState.getBranchState().selectedNode = repositoryTreeNode.key;
+        }
+
+        if (repositoryTreeNode.leaf) {
+            repository.getCurrentBranch()
+                    .getFile(repositoryTreeNode.key)
+                    .ifPresent(file -> sourceTabsSharedState.addSourceTab(file));
+        }
     }
 
     @JsMethod
@@ -387,14 +492,31 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
         repositoryTreeSharedState.inFavorites = repository.setFavorite();
     }
 
+    @JsMethod
+    public void onFromSource() {
+        final SourceTabsState currentState = sourceTabsSharedState.getCurrentState();
+
+        if (currentState != null) {
+            revealKey(currentState.activeCodeTab);
+        }
+    }
 
     @JsMethod
     public void onContextMenu(MouseEvent mouseEvent, RepositoryTreeNode node) {
         treeComponent.setCurrentKey(node.key);
 
+        contextMenuActions[1].visible = node.leaf;
         contextMenuActions[2].visible = !node.leaf;
 
         contextMenuPosition = new Position(mouseEvent.clientX, mouseEvent.clientY);
+    }
+
+    public void copyTreeNodeNameToClipBoard() {
+        Copy.copyNodeName(treeComponent.getCurrentNode());
+    }
+
+    public void copyFileUrlToClipBoard() {
+        Copy.copyNodeUrl(repository, treeComponent.getCurrentNode());
     }
 
     @Override

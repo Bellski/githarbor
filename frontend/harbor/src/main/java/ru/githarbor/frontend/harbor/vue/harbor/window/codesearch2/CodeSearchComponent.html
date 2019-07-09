@@ -8,7 +8,7 @@
            :close-on-click-modal="false"
            @close="onClose">
 
-    <span slot="title">{{directory}}</span>
+    <span slot="title">{{title}}</span>
 
     <div class="is-flex is-full-size is-vertical">
         <el-input v-model="input"
@@ -18,14 +18,16 @@
                   maxlength="120"
                   show-word-limit
         >
-            <el-select v-model="extension" slot="prepend">
-                <el-option
-                        v-for="Extension extension in extensions"
-                        :key="extension.name"
-                        :label="extension.label"
-                        :value="extension.name">
-                </el-option>
-            </el-select>
+            <div slot="prepend" style="min-width: 30px">
+                <el-select v-model="extension">
+                    <el-option
+                            v-for="Extension extension in extensions"
+                            :key="extension.name"
+                            :label="extension.label"
+                            :value="extension.name">
+                    </el-option>
+                </el-select>
+            </div>
             <span slot="suffix">
                 <fa-icon icon="search"></fa-icon>
             </span>
@@ -45,13 +47,13 @@
                     <ul class="g-list is-mini is-unselectable">
                         <li :key="index"
                             v-for="(MatchLine matchLine, index) in matchLines"
-                            :class='map(e("is-background-color-6", matchLineIndex == index))'
+                            :class='map(e("is-selected", matchLineIndex == index))'
                             style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; position: relative"
                             @click="onMatchLineSelect(index, matchLine)"
                             @dblclick="onMatchLineDoubleClick(index, matchLine)"
                         >
-                            <div class="is-inline">
-                                {{matchLine.content}}
+                            <div class="is-inline" v-html="matchLine.content">
+
                             </div>
 
                             <span class="is-color-3" style="position: absolute; top:0; right: 0.4rem;">
@@ -60,7 +62,7 @@
                         </li>
 
                         <li v-if="loadMore"
-                            :class='map(e("is-background-color-6", matchLineIndex == matchLines.length))'
+                            :class='map(e("is-selected", matchLineIndex == matchLines.length))'
                             @click="onLoadMore"
                         >
                             <fa-icon v-if="loadingMore" icon="cog" spin></fa-icon>

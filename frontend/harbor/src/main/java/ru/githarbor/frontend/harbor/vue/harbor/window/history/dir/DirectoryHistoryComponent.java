@@ -5,15 +5,22 @@ import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.Prop;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
+import com.axellience.vuegwt.core.client.component.hooks.HasBeforeDestroy;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasDestroyed;
+import com.axellience.vuegwt.core.client.component.hooks.HasMounted;
 import elemental2.core.JsArray;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import ru.githarbor.frontend.harbor.core.github.core.Repository;
 import ru.githarbor.frontend.harbor.core.github.request.CommitsRequest;
 import ru.githarbor.frontend.harbor.core.state.HarborState;
+import ru.githarbor.frontend.harbor.jslib.MyKeyboardEvent;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.commits.CommitsListComponent;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.dir.dirtree.DirectoryHistoryTreeComponent;
 import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
@@ -21,12 +28,16 @@ import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
 import javax.inject.Inject;
 import java.util.Arrays;
 
+import static elemental2.dom.DomGlobal.setTimeout;
+import static elemental2.dom.DomGlobal.window;
+import static ru.githarbor.frontend.harbor.jslib.HarborGlobal.getActiveElement;
+
 @Component(components = {
         LoaderComponent.class,
         CommitsListComponent.class,
         DirectoryHistoryTreeComponent.class
 })
-public class DirectoryHistoryComponent implements IsVueComponent, HasCreated, HasDestroyed {
+public class DirectoryHistoryComponent implements IsVueComponent, HasCreated, HasMounted, HasBeforeDestroy {
 
     @Inject
     public HarborState harborState;
@@ -58,6 +69,9 @@ public class DirectoryHistoryComponent implements IsVueComponent, HasCreated, Ha
     @Data
     public boolean loadingMore = false;
 
+    private Element elBodyElement;
+    private EventListener keyDownListener;
+
     @Computed
     public boolean getLoadMore() {
         return pageInfo != null && pageInfo.hasNextPage;
@@ -82,8 +96,30 @@ public class DirectoryHistoryComponent implements IsVueComponent, HasCreated, Ha
     }
 
     @Override
-    public void destroyed() {
+    public void mounted() {
+        vue().$nextTick(() -> {
+            elBodyElement = vue().<HTMLElement>$el();
 
+            setTimeout(p0 -> elBodyElement.focus(), 100);
+
+            elBodyElement.setAttribute("tabindex", 0);
+            elBodyElement.addEventListener("keydown", keyDownListener = evt -> {
+                final MyKeyboardEvent myKeyboardEvent = Js.cast(evt);
+
+                if (myKeyboardEvent.getKeyCode() == 27) {
+                    if (Arrays.asList(evt.path).contains(elBodyElement)) {
+                        onClose();
+                    }
+                }
+            });
+
+        });
+    }
+
+    @Override
+    public void beforeDestroy() {
+        elBodyElement.removeEventListener("keydown", keyDownListener);
+        elBodyElement = null;
     }
 
     @JsMethod
@@ -118,4 +154,6 @@ public class DirectoryHistoryComponent implements IsVueComponent, HasCreated, Ha
             loadingMore = false;
         });
     }
+
+
 }

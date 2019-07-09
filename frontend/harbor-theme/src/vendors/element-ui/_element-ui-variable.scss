@@ -1,10 +1,13 @@
 $--font-size-base: $g-font-size;
 $--background-color-base: $g-primary-color;
+$--color-text-regular: $g-color-1;
 $--border-color-hover: $g-border-hover-color;
 $--input-focus-border: $g-border-focus-color;
 $--border-color-base: $g-border-primary-color;
 $--border-radius-base: 2px;
 $--color-primary: $g-color-1;
+$--color-white: $g-work-space-color;
+$--color-text-placeholder: $g-color-3;
 
 $--box-shadow-light:none;
 
@@ -36,6 +39,10 @@ $--select-input-focus-border-color: $--input-focus-border;
 $--select-input-font-size: $g-font-size;
 $--select-option-selected-font-color: $g-color-1;
 
+$--dropdown-menuItem-hover-fill: $g-hover-color;
+$--dropdown-menuItem-hover-color: $g-color-1;
+
+
 /* Radio
 ------------------------------- */
 $--select-group-color: $g-work-space-color;
@@ -48,3 +55,11 @@ $--radio-button-checked-border-color: transparent;
 /* Dialog
 ------------------------------- */
 $--dialog-font-size: $g-font-size;
+
+/* Tooltip
+-------------------------- */
+$--tooltip-fill: $g-border-primary-color;
+$--tooltip-color: $g-work-space-color;
+$--tooltip-border-color: $g-border-primary-color;
+$--tooltip-arrow-size: 6px !default;
+$--tooltip-padding: $g-vertical-offset $g-horizontal-offset;

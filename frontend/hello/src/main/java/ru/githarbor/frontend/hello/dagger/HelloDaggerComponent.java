@@ -2,6 +2,7 @@ package ru.githarbor.frontend.hello.dagger;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import ru.githarbor.frontend.github.client.GitHubGqlClient;
 import ru.githarbor.frontend.hello.vue.HelloComponentFactory;
 import ru.githarbor.shared.User;
 
@@ -17,6 +18,9 @@ public interface HelloDaggerComponent {
 
         @BindsInstance
         Builder user(User user);
+
+        @BindsInstance
+        Builder gitHubGqlClient(GitHubGqlClient client);
 
         HelloDaggerComponent build();
     }

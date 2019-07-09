@@ -12,10 +12,12 @@ import {
     faCircle,
     faHeartbeat,
     faBox,
-    faCog
+    faCog,
+    faWindowRestore,
+    faWindowMaximize
 } from '@fortawesome/free-solid-svg-icons';
 import simplebar from 'simplebar-vue';
-
+import {format} from 'timeago.js';
 
 window.Vue = Vue;
 Vue.prototype.$ELEMENT = {size: 'mini', zIndex: 3000};
@@ -38,8 +40,15 @@ library.add(
     faCircle,
     faHeartbeat,
     faBox,
-    faCog
+    faCog,
+    faWindowRestore,
+    faWindowMaximize
 );
+
+window.timeago = format;
+window.kFormat = function kFormatter(num) {
+    return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
+};
 
 let script = document.createElement("script");
 script.type = "text/javascript";

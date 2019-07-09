@@ -31,6 +31,12 @@
       padding: 0.04rem  $g-horizontal-offset;
     }
   }
+
+  &.is-middle {
+    > li {
+      padding: 0.06rem  $g-horizontal-offset;
+    }
+  }
 }
 
 

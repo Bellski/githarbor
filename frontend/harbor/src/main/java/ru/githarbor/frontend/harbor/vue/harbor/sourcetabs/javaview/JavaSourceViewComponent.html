@@ -1,0 +1,18 @@
+<div class="is-full-height is-workspace">
+    <usages-popup :position="usagesPosition"
+                  :usages="usages"
+                  :usage-of="usagesContainer.of"
+                  @usage-select="onUsageSelect"
+    >
+
+    </usages-popup>
+
+    <loader v-if="loading" text="Loading source..."></loader>
+
+    <div class="is-flex is-vertical is-full-size" v-else>
+        <div style="width: 100%; height: 100%;" ref="monacoContainer"></div>
+        <code-bread-crumbs :bread-crumbs="breadCrumbs"
+                           @select="onBreadCrumbSelect"
+        ></code-bread-crumbs>
+    </div>
+</div>

@@ -9,6 +9,10 @@
   justify-content: center;
   align-items: center;
   color: $g-color-4;
+
+  svg {
+    margin-right: $g-horizontal-offset;
+  }
 }
 
 .g-search-repository-input {
@@ -39,7 +43,7 @@
 .g-toolbar {
   border-bottom: $g-border;
   width: 100%;
-  padding: 0.166rem 0.4375rem 0.148rem 0.4375rem;
+  padding: 0.176rem 0.4375rem 0.178rem 0.4375rem;
   background: $g-primary-color;
 
   .g-toolbar-divider {
@@ -90,6 +94,7 @@
 
     .el-tab-pane {
       flex-grow: 1;
+      height: 100%;
     }
   }
 }
@@ -138,12 +143,14 @@
 @include context-menu();
 
 .g-directory-history-tree {
+  outline: 0;
+
   .modified {
-    color: #1565C0;
+    color: #3a9ff2;
   }
 
   .removed {
-    color: #E64A19;
+    color: #e25b5b;
   }
 
   .added {
@@ -157,9 +164,32 @@
     border: none;
   }
 
+  .el-input {
+    .el-input-group__prepend {
+      .el-select {
+
+      }
+
+      div.el-select .el-input__inner,
+      div.el-select:hover .el-input__inner {
+        background-color: transparent;
+        color: inherit;
+        border: $g-border !important;
+      }
+    }
+  }
+
   .el-select {
+    transition: none;
+
     .el-input {
-      width: 60px;
+      .el-select__caret {
+        &.is-reverse {
+          transform: rotateZ(180deg);
+        }
+
+        transition: none;
+      }
 
       .el-input__inner {
         height: 22px;
@@ -171,5 +201,49 @@
         margin: 0;
       }
     }
+  }
+
+  .g-code-search-mark {
+    background: $g-code-search-mark-background;
+    border-radius: 2px;
+  }
+}
+
+.g-svg-render {
+  svg {
+    width: 100%;
+    height: auto;
+    max-height: 800px;
+  }
+}
+
+.g-repository-tree-dir-icon {
+  color: $g-repository-tree-folder-icon-color;
+}
+
+.g-reposearch-input {
+  &.el-input {
+    width: 500px;
+  }
+
+  .el-select {
+
+    .el-input {
+      .el-input__suffix {
+        margin-right: 0;
+      }
+    }
+
+    .el-input__inner {
+      width: 110px;
+      height: 22px;
+      line-height: 22px;
+    }
+  }
+}
+
+.g-reposearch-popup-list {
+  .g-repository-list {
+    max-height: 400px;
   }
 }

@@ -7,9 +7,9 @@ import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
+import ru.githarbor.frontend.github.request.FavoriteRepositoriesRequest;
 import ru.githarbor.frontend.github.request.RepositorySearchRequest;
 import ru.githarbor.frontend.harbor.core.github.core.RepositoryInfo;
-import ru.githarbor.frontend.harbor.core.github.request.FavoriteRepositoriesRequest;
 import ru.githarbor.frontend.harbor.core.rpc.UserManagerRpcClient;
 import ru.githarbor.frontend.harbor.jslib.HarborGlobal;
 import ru.githarbor.frontend.harbor.vue.harbor.repository.RepositoryTreeSharedState;
@@ -44,13 +44,13 @@ public class FavoriteRepositoriesComponent implements IsVueComponent, HasCreated
     public RepositoryTreeSharedState repositoryTreeSharedState;
 
     @Data
-    public boolean loading = true;
+    public boolean loading;
 
     @Data
     public String input;
 
     @Data
-    public Repository[] repositories;
+    public Repository[] repositories = new Repository[0];
 
     public Repository[] allRepositories;
 
@@ -75,7 +75,6 @@ public class FavoriteRepositoriesComponent implements IsVueComponent, HasCreated
                 final Repository[] newRepositories = new Repository[repositories.length + 1];
                 newRepositories[0] =  new Repository(
                         repositoryInfo.nameWithOwner.ownerWithName,
-                        repositoryInfo.description,
                         "",
                         repositoryInfo.primaryLanguage,
                         HarborGlobal.kFormat(Double.valueOf(repositoryInfo.stars)),
@@ -99,6 +98,8 @@ public class FavoriteRepositoriesComponent implements IsVueComponent, HasCreated
         });
 
         if (user.favoriteRepositories != null) {
+            loading = true;
+
             favoriteRepositoriesRequest.execute(user.favoriteRepositories).subscribe(repositoryJsArray -> {
                 allRepositories = Arrays.stream(Js.<FavoriteRepositoriesRequest.Repository[]>uncheckedCast(repositoryJsArray.slice(0)))
                         .map(repository -> {
@@ -109,7 +110,6 @@ public class FavoriteRepositoriesComponent implements IsVueComponent, HasCreated
 
                             return new Repository(
                                     repository.nameWithOwner,
-                                    repository.description,
                                     languageColor,
                                     languageName,
                                     HarborGlobal.kFormat(repository.stars),

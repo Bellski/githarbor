@@ -4,6 +4,7 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.annotations.component.Ref;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
+import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasDestroyed;
 import com.axellience.vuegwt.core.client.component.hooks.HasMounted;
 import com.axellience.vuegwt.core.client.component.hooks.HasRender;
@@ -11,26 +12,61 @@ import com.axellience.vuegwt.core.client.vnode.VNode;
 import com.axellience.vuegwt.core.client.vnode.VNodeData;
 import com.axellience.vuegwt.core.client.vnode.builder.VNodeBuilder;
 import elemental2.core.JsArray;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import ru.githarbor.shared.User;
 
 import javax.inject.Inject;
 import java.util.Objects;
 
+import static ru.githarbor.frontend.harbor.event.Events.MAIN_SIDEBAR_RESIZED;
+
 @Component(hasTemplate = false, components = {SideBarPaneComponent.class, SideBarTabComponent.class})
-public class SideBarComponent implements IsVueComponent, HasRender, HasMounted, HasDestroyed {
+public class SideBarComponent implements IsVueComponent, HasRender, HasMounted, HasDestroyed, HasCreated {
 
     @Ref
     protected IsVueComponent splitPanes;
+
+    @Inject
+    public User user;
 
     @Data
     @Inject
     public SideBarState state;
 
     @Override
+    public void created() {
+        if (user.tier1Backer) {
+            if (user.uiState.sideBarTabIndex == 0) {
+                state.oldSideBarTabContentWidth = user.uiState.sideBarTabContentWidth;
+                state.oldSideBarContentWidth = user.uiState.sideBarContentWidth;
+                state.sideBarTabContentWidth = 0;
+                state.sideBarContentWidth = 100;
+                state.sideBarTabIndex = user.uiState.sideBarTabIndex;
+            } else {
+                state.sideBarTabContentWidth = user.uiState.sideBarTabContentWidth;
+                state.sideBarContentWidth = user.uiState.sideBarContentWidth;
+                state.sideBarTabIndex = user.uiState.sideBarTabIndex;
+            }
+
+            vue().$watch(() -> state.sideBarTabContentWidth, (newValue, oldValue) -> user.uiState.sideBarTabContentWidth = newValue);
+            vue().$watch(() -> state.sideBarContentWidth, (newValue, oldValue) -> user.uiState.sideBarContentWidth = newValue);
+            vue().$watch(() -> state.sideBarTabIndex, (newValue, oldValue) -> {
+                user.uiState.sideBarTabIndex = newValue;
+
+                if (newValue == 0) {
+                    user.uiState.sideBarTabContentWidth = state.oldSideBarTabContentWidth;
+                    user.uiState.sideBarContentWidth = state.oldSideBarContentWidth;
+                }
+            });
+        }
+    }
+
+    @Override
     public void mounted() {
-        calculateFirstPane();
+//        calculateFirstPane();
     }
 
     private void calculateFirstPane() {
@@ -88,16 +124,17 @@ public class SideBarComponent implements IsVueComponent, HasRender, HasMounted, 
                                 .on("resized", event -> {
                                     final JsArray<JsPropertyMap> evt = Js.cast(event);
 
-                                    state.sideBarTabContentWidth = Js.cast(evt.getAt(0).get("width"));
-                                    state.sideBarContentWidth = Js.cast(evt.getAt(1).get("width"));
+                                    state.setSideBarTabContentWidth(Js.cast(evt.getAt(0).get("width")));
+                                    state.setSideBarContentWidth(Js.cast(evt.getAt(1).get("width")));
 
-                                    vue().$emit("splitter-moved", event);
+                                    vue().$emit(MAIN_SIDEBAR_RESIZED, event);
+                                    vue().$root().vue().$emit(MAIN_SIDEBAR_RESIZED, event);
                                 })
                                 .setRef("splitPanes"),
                         builder.el("div", VNodeData
                                         .get()
                                         .setClassProp("g-sidebar-panes")
-                                        .setAttrs(JsPropertyMap.of("splitpanes-size", state.sideBarTabContentWidth, "splitpanes-min", "15")),
+                                        .setAttrs(JsPropertyMap.of("splitpanes-size", state.sideBarTabContentWidth)),
                                 vue().$slots().get("default")
                         ),
                         builder.el("div", VNodeData

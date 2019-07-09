@@ -5,6 +5,7 @@ import dagger.Component;
 import ru.githarbor.frontend.github.client.GitHubGqlClient;
 import ru.githarbor.frontend.harbor.core.InitParameters;
 import ru.githarbor.frontend.harbor.core.github.core.Repository;
+import ru.githarbor.frontend.harbor.core.rpc.UserManagerRpcClient;
 import ru.githarbor.frontend.harbor.vue.harbor.HarborComponentFactory;
 import ru.githarbor.shared.User;
 
@@ -32,4 +33,6 @@ public interface HarborDaggerComponent {
     }
 
     HarborComponentFactory harborComponentFactory();
+
+    UserManagerRpcClient userManagerRpcClient();
 }

@@ -24,9 +24,11 @@ import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import ru.githarbor.backend._main.dagger.DaggerMainComponent;
 import ru.githarbor.backend._main.dagger.MainComponent;
 import ru.githarbor.backend._main.manager.UserManager;
+import ru.githarbor.backend._main.rocker.file_viewer;
 import ru.githarbor.backend._main.rocker.glide_hello;
 import ru.githarbor.backend._main.rocker.glide_project;
 import ru.githarbor.backend._main.server.ws.RepositoryPathsService;
+import ru.githarbor.shared.UiState;
 import ru.githarbor.shared.User;
 import ru.githarbor.shared.paths.Branch;
 
@@ -44,7 +46,7 @@ import java.util.Set;
 
 public class Main {
 
-    public static final String GH_ID = "ghId";
+    public static final String GH_ID = "ghId]";
 
     public enum Roles implements Role {
         USER;
@@ -75,15 +77,41 @@ public class Main {
                 .requestLogger((ctx, executionTimeMs) -> {
 
                 })
-                .enableStaticFiles("D:\\Projects\\github\\githarbor\\frontend\\webpack-output", Location.EXTERNAL)
+                .enableStaticFiles("D:\\Projects\\githarbor\\frontend\\webpack-output", Location.EXTERNAL)
                 .accessManager(Main::onAccess)
                 .sessionHandler(() -> sessionHandler)
                 .get("/", ctx -> onRoot(ctx, mainComponent.userManager()), Roles.USER())
                 .get("/user/in", Main::onUserIn)
                 .get("/github/oauth", ctx -> onGitHubOauth(ctx, mainComponent.userManager()))
-                .get("/github/:owner/:name", ctx -> onRepository(ctx, mainComponent.userManager()), Roles.USER())
+                .get("/:owner/:name", ctx -> onRepository(ctx, mainComponent.userManager()), Roles.USER())
+                .get("/:owner/:name/blob/:branch/*", ctx -> {
+
+
+                    if (ctx.queryParam("repository") != null) {
+                        onRepository(ctx, mainComponent.userManager());
+
+                        return;
+                    }
+
+                    ctx.contentType("text/html; charset=utf-8");
+
+                    final User user = mainComponent.userManager().getUser(ctx.sessionAttribute(GH_ID));
+
+                    final String theme = user.darkTheme ? "dark.harbor.css"  : "default.harbor.css";
+
+                    final JsonObject init = new JsonObject();
+                    init.addProperty("accessToken", (String) ctx.sessionAttribute("accessToken"));
+                    init.addProperty("dark", user.darkTheme);
+
+                    ctx.result(
+                            file_viewer.template(theme, init.toString())
+                                    .render()
+                                    .toString()
+                    );
+                }, Roles.USER())
                 .ws("/websocket/paths", wsHandler -> onWebSocketPaths(wsHandler, defaultSessionCache, mainComponent.wsConnections(), mainComponent.repositoryPathsService()))
                 .post("/user/user-manager", mainComponent.userManagerRpcServer(), Roles.USER())
+                .post("/java-resolver", mainComponent.javaSourceResolverRpcServer(), Roles.USER())
                 .start(80);
     }
 
@@ -125,7 +153,7 @@ public class Main {
         final User user = userManager.getUser(ctx.sessionAttribute(GH_ID));
         user.accessToken = ctx.sessionAttribute("accessToken");
 
-        final String theme = user.theme.equals("light") ? "default.harbor.css" : "dark.harbor.css";
+        final String theme = user.darkTheme ? "dark.harbor.css"  : "default.harbor.css";
 
         ctx.result(glide_hello.template(new Gson().toJson(user), theme)
                 .render()
@@ -175,9 +203,14 @@ public class Main {
         final User user = usersManager.getUser(ctx.sessionAttribute(GH_ID));
         user.accessToken = ctx.sessionAttribute("accessToken");
 
-        final String theme = user.theme.equals("light") ? "default.harbor.css" : "dark.harbor.css";
+        if (user.tier1Backer) {
+            user.uiState = usersManager.getUiState(ctx.sessionAttribute(GH_ID), ctx.pathParam(":owner") + "/" + ctx.pathParam(":name"));
+        }
 
-        ctx.result(glide_project.template(new Gson().toJson(user), null,theme)
+        final String theme = user.darkTheme ? "dark.harbor.css"  : "default.harbor.css";
+        final String themeName = user.darkTheme ? "dark" : "default";
+
+        ctx.result(glide_project.template(new Gson().toJson(user), null, theme, themeName)
                 .render()
                 .toString());
     }
