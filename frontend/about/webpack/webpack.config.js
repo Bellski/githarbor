@@ -41,6 +41,10 @@ module.exports = {
             {
                 from: path.resolve(__dirname, './src/about.html'),
                 to: path.resolve(__dirname, '../../webpack-output/about/assets/webpack')
+            },
+            {
+                from: path.resolve(__dirname, './src/support.html'),
+                to: path.resolve(__dirname, '../../webpack-output/about/assets/webpack')
             }
         ])
     ]

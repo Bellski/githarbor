@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 // Костыль, вебпак генерит js с css - https://github.com/webpack-contrib/mini-css-extract-plugin/issues/151
 class Without {
@@ -32,7 +33,9 @@ class Without {
 
 
 module.exports = {
-    mode: 'development',
+    optimization: {
+        minimizer: [new UglifyJsPlugin()]},
+    mode: 'production',
     resolve: {
         extensions: ['.js', '.scss', '.css', 'sass']
     },
@@ -44,37 +47,65 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, '../../webpack-output/hello/assets/webpack'),
         filename: '[name].js',
-        publicPath: '/hello/assets/webpack/'
+        publicPath: 'http://cdn.githarbor.com/hello/assets/webpack/'
     },
     module: {
         rules: [{
             test: /\.(sa|sc|c)ss$/,
             use: [
                 MiniCssExtractPlugin.loader,
-                {
-                    loader: 'css-loader'
-                },
-                {
-                    loader: 'sass-loader',
+                'css-loader',
+                'postcss-loader',
+                'sass-loader',
+            ]
+        },
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
                     options: {
-                        sourceMap: true,
-                        // options...
+                        presets: [
+                            [
+                                "env",
+                                {modules: false}
+                            ]
+                        ],
+                        plugins: [
+                            [
+                                "component",
+                                {
+                                    libraryName: "element-ui",
+                                    styleLibraryName: "theme-chalk"
+                                }
+                            ]
+                        ]
                     }
                 }
-            ]
-        }]
+            },
+            {
+                test: /.(ttf|otf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]',
+                        outputPath: 'fonts/',
+                        publicPath: '/harbor/assets/webpack/fonts'
+                    }
+                }]
+            }
+        ]
     },
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: "[name].css"
+        }),
         new CopyPlugin([
             {
                 from: path.resolve(__dirname, '../build/gwt/war/hello/'),
                 to: path.resolve(__dirname, '../../webpack-output/hello/assets/webpack/gwt')
             },
         ]),
-        new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[name].css"
-        }),
         new Without([/(dark.harbor|default.harbor)\.js(\.map)?$/]), // just give a list with regex patterns that should be excluded
     ]
 };

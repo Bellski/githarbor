@@ -86,6 +86,12 @@ public class File {
     }
 
     public static String extension(String file) {
+        int lastSeparatorIndex = file.lastIndexOf("/");
+
+        if (lastSeparatorIndex != -1) {
+            file = file.substring(lastSeparatorIndex + 1);
+        }
+
         if (file.startsWith(".") || file.lastIndexOf(".") == -1) {
             return "text";
         } else {

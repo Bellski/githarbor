@@ -4,10 +4,13 @@ import com.axellience.vuegwt.core.annotations.component.Component;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import ru.githarbor.frontend.harbor.core.service.RepositoryResolverService;
+import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
 
 import javax.inject.Inject;
 
-@Component
+@Component(components = {
+        LoaderComponent.class
+})
 public class ResolveRepositoryComponent implements IsVueComponent{
 
     @Inject
@@ -22,16 +25,16 @@ public class ResolveRepositoryComponent implements IsVueComponent{
     public void setInfo(String info) {
         switch (info) {
             case "0":
-                this.info = "Caching the new repository";
+                this.info = "Cache new repository";
                 break;
             case  "1":
-                this.info = "Caching the new branch";
+                this.info = "Cache new branch";
                 break;
             case  "2":
-                this.info = "Updating the branch";
+                this.info = "Update branch";
                 break;
             case  "3":
-                this.info = "Caching the huge repository, please wait";
+                this.info = "Cache huge repository, it may take some time, but only once";
                 break;
         }
     }

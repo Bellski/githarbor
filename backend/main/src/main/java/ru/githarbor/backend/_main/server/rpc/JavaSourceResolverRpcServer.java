@@ -35,7 +35,7 @@ public class JavaSourceResolverRpcServer implements Handler {
             "}";
 
     private final Gson gson;
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    public static final HttpClient httpClient = HttpClient.newHttpClient();
 
     @Inject
     public JavaSourceResolverRpcServer(Gson gson) {
@@ -49,7 +49,7 @@ public class JavaSourceResolverRpcServer implements Handler {
         if (ResolveSourceRequest.class.getName().equals(resolveSourceRequest.methodName)) {
             final HttpRequest request = buildRequest(buildQuery(resolveSourceRequest.ownerWithName, resolveSourceRequest.path), ctx.sessionAttribute("accessToken"));
 
-            final String blobContent = getBlobTextFromResponse(httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body());
+            final String blobContent = getBlobTextFromResponse(gson, httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body());
 
             if (blobContent == null) {
                 return;
@@ -63,7 +63,7 @@ public class JavaSourceResolverRpcServer implements Handler {
         }
     }
 
-    private static HttpRequest buildRequest(String query, String token) {
+    public static HttpRequest buildRequest(String query, String token) {
         return HttpRequest.newBuilder()
                 .uri(URI.create("https://api.github.com/graphql"))
                 .setHeader("Accept", "application/json")
@@ -73,7 +73,7 @@ public class JavaSourceResolverRpcServer implements Handler {
                 .build();
     }
 
-    private static String buildQuery(String ownerWithName, String path) {
+    public static String buildQuery(String ownerWithName, String path) {
         final JsonObject variables = new JsonObject();
         variables.addProperty("url", ownerWithName);
         variables.addProperty("path", path);
@@ -85,7 +85,7 @@ public class JavaSourceResolverRpcServer implements Handler {
         return query.toString();
     }
 
-    private String getBlobTextFromResponse(String responseBody) {
+    public static String getBlobTextFromResponse(Gson gson, String responseBody) {
         final JsonObject response = gson.fromJson(responseBody, JsonObject.class);
 
         final JsonElement dataElement = response.get("data");

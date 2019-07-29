@@ -40,7 +40,13 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 @import "../../../../harbor-theme/src/vendors/bulma/bulma-variables";
 
-@import "~bulma/bulma";
+@import "~bulma/sass/utilities/_all";
+@import "~bulma/sass/base/_all";
+@import "~bulma/sass/layout/all";
+@import "~bulma/sass/grid/columns";
+@import "~bulma/sass/elements/icon";
+@import "~bulma/sass/elements/table";
+@import "~bulma/sass/elements/tag";
 
 @import "../../../../harbor-theme/src/vendors/bulma/bulma";
 

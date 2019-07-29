@@ -1,9 +1,6 @@
 package ru.githarbor.frontend.harbor.vue.harbor.window.history.dir;
 
-import com.axellience.vuegwt.core.annotations.component.Component;
-import com.axellience.vuegwt.core.annotations.component.Computed;
-import com.axellience.vuegwt.core.annotations.component.Data;
-import com.axellience.vuegwt.core.annotations.component.Prop;
+import com.axellience.vuegwt.core.annotations.component.*;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasBeforeDestroy;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
@@ -48,7 +45,7 @@ public class DirectoryHistoryComponent implements IsVueComponent, HasCreated, Ha
     @Inject
     public Repository repository;
 
-    @Prop
+    @Data
     public String directory;
 
     @Data
@@ -84,6 +81,8 @@ public class DirectoryHistoryComponent implements IsVueComponent, HasCreated, Ha
 
     @Override
     public void created() {
+        directory = Js.cast(harborState.window.props.get("directory"));
+
         commitsRequest.execute(directory).subscribe(history -> {
             pageInfo = history.pageInfo;
 
@@ -97,6 +96,8 @@ public class DirectoryHistoryComponent implements IsVueComponent, HasCreated, Ha
 
     @Override
     public void mounted() {
+        DomGlobal.console.warn(this);
+
         vue().$nextTick(() -> {
             elBodyElement = vue().<HTMLElement>$el();
 

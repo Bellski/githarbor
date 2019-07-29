@@ -8,10 +8,11 @@
   width: 100%;
   justify-content: center;
   align-items: center;
-  color: $g-color-4;
+  color: $g-loader-color;
 
   svg {
     margin-right: $g-horizontal-offset;
+    color: $g-loader-color;
   }
 }
 
@@ -245,5 +246,21 @@
 .g-reposearch-popup-list {
   .g-repository-list {
     max-height: 400px;
+  }
+}
+
+.g-shortcuts {
+  .table {
+    thead {
+      background-color: $g-primary-color;
+    }
+
+    tbody {
+      background-color: $g-work-space-color;
+    }
+
+    td, th {
+      border-color: $g-border-primary-color;
+    }
   }
 }

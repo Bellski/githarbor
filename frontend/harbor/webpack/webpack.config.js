@@ -2,6 +2,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 // Костыль, вебпак генерит js с css - https://github.com/webpack-contrib/mini-css-extract-plugin/issues/151
 class Without {
@@ -33,20 +34,21 @@ class Without {
 
 
 module.exports = {
-    mode: 'development',
+    optimization: {
+        minimizer: [new TerserPlugin()]},
+    mode: 'production',
     resolve: {
         extensions: ['.js', '.scss', '.css', 'sass']
     },
     entry: {
         bootstrap: './src/bootstrap.js',
-        monaco : './src/monaco.bootstrap.js',
         'css/dark.harbor': './src/scss/dark.harbor.scss',
         'css/default.harbor': './src/scss/default.harbor.scss'
     },
     output: {
         path: path.resolve(__dirname, '../../webpack-output/harbor/assets/webpack'),
         filename: '[name].js',
-        publicPath: '/harbor/assets/webpack/'
+        publicPath: 'http://cdn.githarbor.com/harbor/assets/webpack/'
     },
     module: {
         rules: [
@@ -78,16 +80,9 @@ module.exports = {
                 test: /\.(sa|sc|c)ss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader'
-                    },
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            sourceMap: true,
-                            // options...
-                        }
-                    }
+                    'css-loader',
+                    'postcss-loader',
+                    'sass-loader',
                 ]
             },
             {
@@ -97,7 +92,7 @@ module.exports = {
                     options: {
                         name: '[name].[ext]',
                         outputPath: 'fonts/',
-                        publicPath: '/harbor/assets/webpack/fonts'
+                        publicPath: 'https://cdn.githarbor.com/harbor/assets/webpack/fonts'
                     }
                 }]
             }

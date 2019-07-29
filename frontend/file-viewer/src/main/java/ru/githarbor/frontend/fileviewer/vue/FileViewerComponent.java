@@ -5,13 +5,13 @@ import com.axellience.vuegwt.core.annotations.component.Computed;
 import com.axellience.vuegwt.core.annotations.component.Data;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
-import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsMethod;
 import ru.githarbor.frontend.fileviewer.vue.javaviewer.JavaViewerComponent;
 import ru.githarbor.frontend.fileviewer.vue.sourceviewer.SourceViewerComponent;
 import ru.githarbor.frontend.monaco.LanguageExtensionPoints;
 import ru.githarbor.frontend.fileviewer.core.FileContentRequest;
 import ru.githarbor.frontend.fileviewer.core.InitParams;
+import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
 
 import javax.inject.Inject;
 
@@ -19,7 +19,8 @@ import static elemental2.dom.DomGlobal.*;
 
 @Component(components = {
         JavaViewerComponent.class,
-        SourceViewerComponent.class
+        SourceViewerComponent.class,
+        LoaderComponent.class
 })
 public class FileViewerComponent implements IsVueComponent, HasCreated {
 
@@ -34,6 +35,12 @@ public class FileViewerComponent implements IsVueComponent, HasCreated {
 
     @Data
     public boolean resolving = true;
+
+    @Data
+    public String resolvingInfo = "Loading file...";
+
+    @Data
+    public boolean noText = false;
 
     @Data
     public String lang;
@@ -62,7 +69,8 @@ public class FileViewerComponent implements IsVueComponent, HasCreated {
 
                     resolving = false;
                 }, throwable -> {
-
+                    noText = true;
+                    resolvingInfo = "No text to show";
                 });
     }
 

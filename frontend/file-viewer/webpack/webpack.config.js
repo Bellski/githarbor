@@ -2,6 +2,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 // Костыль, вебпак генерит js с css - https://github.com/webpack-contrib/mini-css-extract-plugin/issues/151
 class Without {
@@ -32,7 +33,9 @@ class Without {
 }
 
 module.exports = {
-    mode: 'development',
+    optimization: {
+        minimizer: [new TerserPlugin()]},
+    mode: 'production',
     resolve: {
         extensions: ['.js', '.scss', '.css', 'sass']
     },
@@ -44,24 +47,50 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, '../../webpack-output/file-viewer/assets/webpack'),
         filename: '[name].js',
-        publicPath: '/file-viewer/assets/webpack/'
+        publicPath: 'http://cdn.githarbor.com/file-viewer/assets/webpack/'
     },
     module: {
         rules: [{
             test: /\.(sa|sc|c)ss$/,
             use: [
                 MiniCssExtractPlugin.loader,
-                {
-                    loader: 'css-loader'
-                },
-                {
-                    loader: 'sass-loader',
-                    options: {
-                        sourceMap: true,
-                        // options...
-                    }
-                }
+                'css-loader',
+                'postcss-loader',
+                'sass-loader',
             ]
+        },  {
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+                loader: 'babel-loader',
+                options: {
+                    presets: [
+                        [
+                            "env",
+                            {modules: false}
+                        ]
+                    ],
+                    plugins: [
+                        [
+                            "component",
+                            {
+                                libraryName: "element-ui",
+                                styleLibraryName: "theme-chalk"
+                            }
+                        ]
+                    ]
+                }
+            }
+        }, {
+            test: /.(ttf|otf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
+            use: [{
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]',
+                    outputPath: 'fonts/',
+                    publicPath: '/harbor/assets/webpack/fonts'
+                }
+            }]
         }]
     },
     plugins: [

@@ -5,7 +5,7 @@
     <title>GitHarbor</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script type="text/javascript" src="bootstrap.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
 
     <style>
@@ -47,6 +47,11 @@
             color: rgba(255, 255, 255, 0.90) !important;
         }
 
+        a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.90) !important;
+        }
+
         .header {
             padding: 20px;
         }
@@ -75,10 +80,8 @@
 <body>
 <section class="hero landing is-fullheight">
     <div class="header">
-        <span>GitHarbor</span>
         <span class="is-pulled-right" style="font-size: 13px;">
-            <span style="margin-right: 30px;">About</span>
-            <span>Contact</span>
+            <a href="about.html" style="margin-right: 30px;">About</a>
         </span>
     </div>
     <section class="hero is-halfheight">
@@ -93,13 +96,13 @@
                         </div>
                         <div class="has-text-right" style="margin-top: 2.5rem;">
                         <span class="button" style="background: #EF6C00; border: none;">
-                            <a href="user/in" >Open GitHarbor</a>
+                            <a href="http://githarbor.com/user/in" >Open GitHarbor</a>
                         </span>
                             <span class="button" style="background: transparent;">
                                 <span class="icon is-small">
                                     <i class="fas fa-heart" style="color: #C2185B;"></i>
                                 </span>
-                                <span>Support GitHarbor</span>
+                                <a href="support.html">Support GitHarbor</a>
                             </span>
                         </div>
                     </div>
@@ -197,7 +200,20 @@
             <div class="container has-text-centered">
                 <div class="container-divider"></div>
                 <div class="title" style="font-size: 1.875rem;">
-                    Support GitHarbor via Patreon or via PayPal
+                    Support GitHarbor via
+                    <span class="button" style="background: rgb(232, 91, 70); border:none;">
+                        <span class="icon is-small">
+                            <i class="fab fa-patreon"></i>
+                        </span>
+                        <a href="https://www.patreon.com/bellski">Patreon</a>
+                    </span>
+                    or via
+                    <span class="button" style="background: #0D47A1; border: none;">
+                        <span class="icon is-small">
+                            <i class="fab fa-paypal"></i>
+                        </span>
+                        <span>PayPal</span>
+                    </span>
                 </div>
                 <div class="subtitle" style="font-size: 1.25rem">
                     All Supporters get the dark theme and advanced functionality in appreciation

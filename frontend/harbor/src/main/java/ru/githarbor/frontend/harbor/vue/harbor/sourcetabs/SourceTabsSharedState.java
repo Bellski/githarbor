@@ -44,6 +44,12 @@ public class SourceTabsSharedState {
         return currentState.tabs.length > 0;
     }
 
+    public void setActiveTab(String key) {
+        getCurrentState().activeCodeTab = key;
+
+        updateUiState();
+    }
+
     public void addSourceTab(File file) {
         addSourceTab(file, null);
     }
@@ -69,9 +75,16 @@ public class SourceTabsSharedState {
             if (currentState.activeCodeTab.equals(key)) {
                 currentState.activeCodeTab = currentState.tabs.getAt(indexOfTab > 0 ? indexOfTab - 1 : indexOfTab + 1).key;
             }
+
+            currentState.tabs = new JsArray<>(Js.uncheckedCast(currentState.tabs.filter((p0, p1, p2) -> !p0.key.equals(key))));
+
+            updateUiState();
+
+            return;
         }
 
-        currentState.tabs = new JsArray<>(Js.uncheckedCast(currentState.tabs.filter((p0, p1, p2) -> !p0.key.equals(key))));
+        currentState.tabs = new JsArray<>();
+        currentState.activeCodeTab = null;
 
         updateUiState();
     }

@@ -1,4 +1,4 @@
-<div class="is-full-height is-workspace">
+<div :class='map(e("is-full-height", true), e("is-workspace", !isDark))'>
     <loader v-if="loading" text="Loading source..."></loader>
     <div v-if="error != null" class="is-flex is-centered is-full-size">
         {{error}}

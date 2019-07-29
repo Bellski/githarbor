@@ -1,13 +1,10 @@
 <section class="hero is-fullheight">
     <div class="hero-body is-flex is-centered">
         <template v-if="!notFound">
-            <fa-icon icon="cog" spin size="2x" class="is-color-1"></fa-icon>
-            <div class="title is-5 is-inline">
-                {{info}}
-            </div>
+            <loader :text="info"></loader>
         </template>
         <template v-else>
-            <span class="title is-5">
+            <span class="is-color-3">
                 Repository not found
             </span>
         </template>

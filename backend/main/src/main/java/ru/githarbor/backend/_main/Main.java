@@ -46,7 +46,7 @@ import java.util.Set;
 
 public class Main {
 
-    public static final String GH_ID = "ghId]";
+    public static final String GH_ID = "ghId";
 
     public enum Roles implements Role {
         USER;
@@ -112,6 +112,7 @@ public class Main {
                 .ws("/websocket/paths", wsHandler -> onWebSocketPaths(wsHandler, defaultSessionCache, mainComponent.wsConnections(), mainComponent.repositoryPathsService()))
                 .post("/user/user-manager", mainComponent.userManagerRpcServer(), Roles.USER())
                 .post("/java-resolver", mainComponent.javaSourceResolverRpcServer(), Roles.USER())
+                .post("/go-resolver", mainComponent.goSourceResolverRpcServer(), Roles.USER())
                 .start(80);
     }
 
@@ -188,7 +189,7 @@ public class Main {
         if (ctx.sessionAttribute(GH_ID) == null) {
             ctx.header(
                     "Location",
-                    "https://github.com/login/oauth/authorize?response_type=code&client_id=3b46f46516a128866a4e&redirect_uri=http://githarbor.com/github/oauth"
+                    "https://github.com/login/oauth/authorize?response_type=code&client_id=269e8e0c59cd02884187&redirect_uri=http://githarbor.com/github/oauth"
             );
         } else {
             ctx.header("Location", "/");
@@ -252,7 +253,7 @@ public class Main {
 
             final String result = httpRequest(
                     "https://github.com/login/oauth/access_token",
-                    ("{\"client_id\":\"3b46f46516a128866a4e\", \"client_secret\": \"ef7583f9532836cfc17dd59f54bf062e6f62fd3f\", \"code\":" + "\"" + tempCode + "\"" + "}").getBytes("UTF-8"),
+                    ("{\"client_id\":\"269e8e0c59cd02884187\", \"client_secret\": \"4549c3a8da24b427a3e83f18124573788323fa57\", \"code\":" + "\"" + tempCode + "\"" + "}").getBytes("UTF-8"),
                     null
             );
 

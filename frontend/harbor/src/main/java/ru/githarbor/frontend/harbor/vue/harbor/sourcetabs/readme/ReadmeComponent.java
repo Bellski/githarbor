@@ -10,6 +10,7 @@ import elemental2.core.JsArray;
 import elemental2.dom.*;
 import jsinterop.base.Js;
 import ru.githarbor.frontend.harbor.core.github.core.Branch;
+import ru.githarbor.frontend.harbor.core.github.core.File;
 import ru.githarbor.frontend.harbor.core.github.core.Repository;
 import ru.githarbor.frontend.harbor.core.state.HarborState;
 import ru.githarbor.frontend.harbor.jslib.Marked;
@@ -20,6 +21,8 @@ import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
 import ru.githarbor.shared.User;
 
 import javax.inject.Inject;
+
+import java.util.Optional;
 
 import static elemental2.dom.DomGlobal.window;
 
@@ -49,6 +52,12 @@ public class ReadmeComponent implements IsVueComponent, HasCreated {
     @Data
     public boolean resolved;
 
+    @Data
+    public String loadInfo = "Loading readme...";
+
+    @Data
+    public boolean notFound = false;
+
     @Ref
     public HTMLDivElement renderContainer;
 
@@ -63,6 +72,15 @@ public class ReadmeComponent implements IsVueComponent, HasCreated {
     }
 
     private void resolveContent(Branch branch) {
+        final Optional<File> readmeFileOpt = branch.findFileByNameAtRoot("readme.md");
+
+        if (!readmeFileOpt.isPresent()) {
+            loadInfo = "Readme not found";
+            notFound = true;
+
+            return;
+        }
+
         branch.findFileByNameAtRoot("readme.md").ifPresent(file -> file.resolveContent().subscribe(content -> {
             resolved = true;
 

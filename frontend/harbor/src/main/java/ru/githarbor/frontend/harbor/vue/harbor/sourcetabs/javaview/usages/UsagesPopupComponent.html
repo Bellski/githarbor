@@ -7,21 +7,25 @@
     <div class="has-bottom-border is-padding is-primary-background has-text-centered">
         Usages of {{usageOf}} ({{usages.length}} found)
     </div>
-    <ul class="g-list is-middle">
-        <li :key="index"
-            v-for="(Usage usage, index) in usages"
-            class="is-background-hover"
-            @click="onUsageSelect(usage)"
-        >
-            <div class="is-flex">
-                <div>
-                    <span>{{usage.className}}</span>
-                    <span class="has-horizontal-padding">{{usage.line}}</span>
+
+    <simple-bar style="width: 100%; max-height: 600px;">
+        <ul class="g-list is-middle">
+            <li :key="index"
+                v-for="(Usage usage, index) in usages"
+                class="is-background-hover"
+                @click="onUsageSelect(usage)"
+                style="white-space: nowrap;"
+            >
+                <div class="is-flex">
+                    <div ref="classNameElements">
+                        <span>{{usage.className}}</span>
+                        <span class="has-horizontal-padding">{{usage.line}}</span>
+                    </div>
+                    <div ref="usageTextElements" class="is-flex-grow is-color-1">
+                        <span>{{usage.usageText}}</span>
+                    </div>
                 </div>
-                <div class="is-flex-grow is-color-1">
-                    <span>{{usage.usageText}}</span>
-                </div>
-            </div>
-        </li>
-    </ul>
+            </li>
+        </ul>
+    </simple-bar>
 </div>

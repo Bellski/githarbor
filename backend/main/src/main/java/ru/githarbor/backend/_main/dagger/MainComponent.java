@@ -5,6 +5,7 @@ import io.javalin.websocket.WsSession;
 import ru.githarbor.backend._main.manager.RepositoryTaskManager;
 import ru.githarbor.backend._main.manager.UserManager;
 import ru.githarbor.backend._main.server.resolver.JavaSourceResolver;
+import ru.githarbor.backend._main.server.rpc.GoSourceResolverRpcServer;
 import ru.githarbor.backend._main.server.rpc.JavaSourceResolverRpcServer;
 import ru.githarbor.backend._main.server.rpc.UserManagerRpcServer;
 import ru.githarbor.backend._main.server.ws.RepositoryPathsService;
@@ -22,4 +23,5 @@ public interface MainComponent {
     RepositoryPathsService repositoryPathsService();
     UserManagerRpcServer userManagerRpcServer();
     JavaSourceResolverRpcServer javaSourceResolverRpcServer();
+    GoSourceResolverRpcServer goSourceResolverRpcServer();
 }

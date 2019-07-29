@@ -37,6 +37,15 @@
       padding: 0.06rem  $g-horizontal-offset;
     }
   }
+
+  > li {
+    &.is-hoverable {
+      cursor: default;
+      &:hover {
+        color: $g-list-hover-color;
+      }
+    }
+  }
 }
 
 

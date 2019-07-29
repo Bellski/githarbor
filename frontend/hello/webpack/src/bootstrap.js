@@ -1,21 +1,23 @@
 import Vue from 'vue';
 import {Tabs, TabPane, Input, Dialog, Button, Popover} from 'element-ui'
+
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import {
-    faTrash,
-    faSearch,
-    faStar,
-    faSpinner,
-    faTimes,
-    faHome,
-    faCircle,
-    faHeartbeat,
-    faBox,
-    faCog,
-    faWindowRestore,
-    faWindowMaximize
-} from '@fortawesome/free-solid-svg-icons';
+
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch'
+import { faStar } from '@fortawesome/free-solid-svg-icons/faStar'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
+import { faHome } from '@fortawesome/free-solid-svg-icons/faHome'
+import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle'
+import { faHeartbeat } from '@fortawesome/free-solid-svg-icons/faHeartbeat'
+import { faBox } from '@fortawesome/free-solid-svg-icons/faBox'
+import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
+import { faWindowRestore } from '@fortawesome/free-solid-svg-icons/faWindowRestore'
+import { faWindowMaximize } from '@fortawesome/free-solid-svg-icons/faWindowMaximize'
+
+
 import simplebar from 'simplebar-vue';
 import {format} from 'timeago.js';
 
@@ -52,6 +54,6 @@ window.kFormat = function kFormatter(num) {
 
 let script = document.createElement("script");
 script.type = "text/javascript";
-script.src = "/hello/assets/webpack/gwt/hello.nocache.js";
+script.src = "http://cdn.githarbor.com/hello/assets/webpack/gwt/hello.nocache.js";
 
 document.head.appendChild(script);

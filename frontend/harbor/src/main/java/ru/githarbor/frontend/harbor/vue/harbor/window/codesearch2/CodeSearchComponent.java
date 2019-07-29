@@ -68,7 +68,7 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
     @Inject
     public MonacoFactory monacoFactory;
 
-    @Prop
+    @Data
     public String directory;
 
     @Data
@@ -172,6 +172,8 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
 
     @Override
     public void created() {
+        directory = Js.cast(harborState.window.props.get("directory"));
+
         vue().$root().vue().$on(Events.WINDOW_RESIZED, onWindowResized = parameter -> {
             if (monaco != null) {
                 monaco.layout();
@@ -191,7 +193,7 @@ public class CodeSearchComponent implements IsVueComponent, HasCreated, HasMount
         final String[] currentExtensions = repository.getCurrentBranch().getExtensions();
         final String[] primaryExtensions = languages.getExtensions(repository.info.primaryLanguage);
 
-        extension = currentExtensions[Arrays.asList(currentExtensions).indexOf(primaryExtensions[0])];
+        extension = repository.info.primaryLanguage != null ? currentExtensions[Arrays.asList(currentExtensions).indexOf(primaryExtensions[0])] : "All";
 
         vue().$watch(() -> input, (newInput, oldInput) -> search(newInput, 600));
 

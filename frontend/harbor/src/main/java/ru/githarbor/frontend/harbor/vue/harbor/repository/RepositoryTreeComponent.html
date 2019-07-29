@@ -40,8 +40,8 @@
         <context-menu :actions="contextMenuActions" :position="contextMenuPosition">
 
         </context-menu>
-        <div v-if="resolvingBranch">
-            {{resolvingBranchProcessMessage}}
+        <div v-if="resolvingBranch" class="is-full-size">
+            <loader :text="resolvingBranchProcessMessage"></loader>
         </div>
         <simple-bar style="width: 100%; height: 100%;"
                     data-simplebar-auto-hide="false"

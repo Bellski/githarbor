@@ -10,6 +10,7 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.MouseEvent;
 import jsinterop.annotations.JsMethod;
 import ru.githarbor.frontend.harbor.core.ImageType;
+import ru.githarbor.frontend.harbor.core.InitParameters;
 import ru.githarbor.frontend.harbor.core.github.core.File;
 import ru.githarbor.frontend.harbor.core.github.core.Repository;
 import ru.githarbor.frontend.harbor.core.state.HarborState;
@@ -17,6 +18,7 @@ import ru.githarbor.frontend.harbor.vue.component.menu.Action;
 import ru.githarbor.frontend.harbor.vue.component.menu.ContextMenuComponent;
 import ru.githarbor.frontend.harbor.vue.component.menu.Position;
 import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.data.SourceTab;
+import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.goview.GoSourceViewComponent;
 import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.imageview.ImageViewComponent;
 import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.javaview.JavaSourceViewComponent;
 import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.readme.ReadmeComponent;
@@ -40,9 +42,13 @@ import java.util.Arrays;
         SvgViewComponent.class,
         MarkdownViewComponent.class,
         JavaSourceViewComponent.class,
+        GoSourceViewComponent.class,
         ContextMenuComponent.class
 })
 public class SourceTabsComponent implements IsVueComponent, HasCreated {
+
+    @Inject
+    public InitParameters initParameters;
 
     @Inject
     public User user;
@@ -93,6 +99,11 @@ public class SourceTabsComponent implements IsVueComponent, HasCreated {
         return File.extension(sourceTab.key).toLowerCase().equals("java");
     }
 
+    @JsMethod
+    public boolean isGo(SourceTab sourceTab) {
+        return File.extension(sourceTab.key).toLowerCase().equals("go");
+    }
+
     @Computed
     public JsArray<SourceTab> getTabs() {
         return sharedState.getCurrentState().tabs;
@@ -105,7 +116,7 @@ public class SourceTabsComponent implements IsVueComponent, HasCreated {
 
     @Computed
     public void setActiveTab(String activeTab) {
-        sharedState.getCurrentState().activeCodeTab = activeTab;
+        sharedState.setActiveTab(activeTab);
     }
 
     @JsMethod
@@ -116,9 +127,9 @@ public class SourceTabsComponent implements IsVueComponent, HasCreated {
     @Override
     public void created() {
         if (user.tier1Backer) {
-            final BranchState branchState = user.uiState.getBranchState();
+            final String activeCodeTab = user.uiState.getBranchState().activeOpenedFile;
 
-            sharedState.getCurrentState().activeCodeTab = branchState.activeOpenedFile;
+            final BranchState branchState = user.uiState.getBranchState();
 
             final FileState[] openedFiles = branchState.openedFiles;
 
@@ -128,6 +139,16 @@ public class SourceTabsComponent implements IsVueComponent, HasCreated {
                     sharedState.addSourceTab(file);
                 }
             }
+
+            if (activeCodeTab != null) {
+                setActiveTab(activeCodeTab);
+            }
+        }
+
+        if (initParameters.blob) {
+            repository.getCurrentBranch().getFile(initParameters.path).ifPresent(file -> {
+                sharedState.addSourceTab(file, initParameters.selection);
+            });
         }
 
         contextMenuActions = new Action[] {

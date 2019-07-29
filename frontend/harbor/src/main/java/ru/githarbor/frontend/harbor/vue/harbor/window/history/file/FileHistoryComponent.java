@@ -3,6 +3,7 @@ package ru.githarbor.frontend.harbor.vue.harbor.window.history.file;
 import com.axellience.vuegwt.core.annotations.component.*;
 import com.axellience.vuegwt.core.client.component.IsVueComponent;
 import com.axellience.vuegwt.core.client.component.hooks.HasBeforeDestroy;
+import com.axellience.vuegwt.core.client.component.hooks.HasCreated;
 import com.axellience.vuegwt.core.client.component.hooks.HasMounted;
 import elemental2.core.JsArray;
 import elemental2.dom.Element;
@@ -27,7 +28,7 @@ import static elemental2.dom.DomGlobal.window;
         CommitsListComponent.class,
         FileHistoryDiffComponent.class
 })
-public class FileHistoryComponent implements IsVueComponent, HasMounted, HasBeforeDestroy {
+public class FileHistoryComponent implements IsVueComponent, HasCreated, HasMounted, HasBeforeDestroy {
 
     @Inject
     public HarborState harborState;
@@ -38,7 +39,7 @@ public class FileHistoryComponent implements IsVueComponent, HasMounted, HasBefo
     @Inject
     public Repository repository;
 
-    @Prop
+    @Data
     public String file;
 
     @Data
@@ -79,6 +80,11 @@ public class FileHistoryComponent implements IsVueComponent, HasMounted, HasBefo
     @Computed
     public CommitsRequest.Node[] getCommits() {
         return Js.uncheckedCast(allCommits.slice(0));
+    }
+
+    @Override
+    public void created() {
+        file = Js.cast(harborState.window.props.get("file"));
     }
 
     @JsMethod

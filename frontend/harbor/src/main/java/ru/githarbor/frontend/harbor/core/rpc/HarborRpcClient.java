@@ -32,4 +32,18 @@ public class HarborRpcClient {
         return fromPromise(DomGlobal.fetch(path, requestInit))
                 .flatMap(response -> fromPromise(Js.<Promise<Object>>cast(response.json())));
     }
+
+    public <T> Single<T> execute2(String path, Object request) {
+        final Headers headers = new Headers();
+        headers.append("Accept", "application/json");
+
+        final RequestInit requestInit = RequestInit.create();
+        requestInit.setHeaders(headers);
+        requestInit.setMethod("POST");
+        requestInit.setBody(JSON.stringify(request));
+
+        return fromPromise(DomGlobal.fetch(path, requestInit))
+                .flatMap(response -> fromPromise(Js.<Promise<T>>cast(response.json())));
+    }
 }
+

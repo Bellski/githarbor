@@ -1,12 +1,15 @@
 <section class="hero is-fullheight is-full-height">
-    <component :is="window" v-bind="windowProps"></component>
+    <component v-if="window != null" :is="window"></component>
 
     <div class="is-flex is-vertical-centered is-padding has-bottom-border ">
         <div class="is-flex-grow has-text-centered">
             <repository-search></repository-search>
         </div>
         <div>
-            <ul class="g-list is-horizontal">
+            <ul class="g-list is-horizontal is-flex is-horizontal-centered">
+                <li class="is-hoverable" @click="onShortcuts">
+                    Shortcuts
+                </li>
                 <li>
                     <el-dropdown trigger="click">
                         <span class="el-dropdown-link">

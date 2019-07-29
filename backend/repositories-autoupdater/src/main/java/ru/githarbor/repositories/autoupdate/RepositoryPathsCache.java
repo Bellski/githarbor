@@ -29,7 +29,7 @@ public class RepositoryPathsCache {
         }
     }
 
-    private static final String accessToke = "2b8c672e8ad5f79067994f2bb267fb1f974d66a4";
+    private static final String accessToke = "4549c3a8da24b427a3e83f18124573788323fa57";
 
     private final RepositoryTreeListFetcher repositoryTreeListFetcher;
     private final RepositoryCacheManager repositoryCacheManager;

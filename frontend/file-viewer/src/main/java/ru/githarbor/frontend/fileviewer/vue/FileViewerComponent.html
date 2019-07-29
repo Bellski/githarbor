@@ -1,9 +1,6 @@
 <section class="hero is-fullheight is-full-height">
     <div v-if="resolving" class="hero-body is-flex is-centered">
-        <fa-icon icon="cog" spin size="2x"></fa-icon>
-        <span>
-            Loading file...
-        </span>
+        <loader :text="resolvingInfo" :error="noText"></loader>
     </div>
     <div class="is-full-size is-flex-grow is-flex-gentle is-vertical" v-if="!resolving">
         <div style="padding-top: 1rem; padding-bottom: 1rem;" class="hero-body is-flex is-horizontal-centered is-vertical">

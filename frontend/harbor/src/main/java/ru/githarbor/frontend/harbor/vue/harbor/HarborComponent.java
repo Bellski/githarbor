@@ -9,8 +9,11 @@ import com.axellience.vuegwt.core.client.component.hooks.HasDestroyed;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLLinkElement;
+import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import ru.githarbor.frontend.github.client.GitHubGqlClient;
+import ru.githarbor.frontend.harbor.vue.harbor.window.shortcuts.ShortcutsComponent;
 import ru.githarbor.frontend.monaco.Monaco;
 import ru.githarbor.frontend.harbor.core.InitParameters;
 import ru.githarbor.frontend.harbor.core.github.core.Repository;
@@ -32,6 +35,7 @@ import ru.githarbor.shared.User;
 import javax.inject.Inject;
 
 import static elemental2.dom.DomGlobal.*;
+import static ru.githarbor.frontend.harbor.event.Events.GLOBAL_KEYDOWN;
 import static ru.githarbor.frontend.harbor.event.Events.WINDOW_RESIZED;
 
 @Component(components = {
@@ -41,7 +45,8 @@ import static ru.githarbor.frontend.harbor.event.Events.WINDOW_RESIZED;
         FileSearchComponent.class,
         FileHistoryComponent.class,
         DirectoryHistoryComponent.class,
-        CodeSearchComponent.class
+        CodeSearchComponent.class,
+        ShortcutsComponent.class
 })
 public class HarborComponent implements IsVueComponent, HasCreated, HasDestroyed {
 
@@ -111,7 +116,7 @@ public class HarborComponent implements IsVueComponent, HasCreated, HasDestroyed
     }
 
     @Computed
-    public Object getWindowProps() {
+    public JsPropertyMap getWindowProps() {
         return harborState.window != null ? harborState.window.props : null;
     }
 
@@ -144,13 +149,13 @@ public class HarborComponent implements IsVueComponent, HasCreated, HasDestroyed
             final MyKeyboardEvent keyboardEvent = (MyKeyboardEvent) evt;
             final int keyCode = keyboardEvent.getKeyCode();
 
-            vue().$emit("global-keydown", keyboardEvent);
+            vue().$emit(GLOBAL_KEYDOWN, keyboardEvent);
 
             if (!keyboardEvent.ctrlKey) {
                 if (keyboardEvent.altKey && keyCode == 78) { // alt + n
                     evt.preventDefault();
 
-                    harborState.window = new Window(FileSearchComponent.NAME);
+                    harborState.window = Window.create(FileSearchComponent.NAME);
 
                     return;
                 }
@@ -158,7 +163,7 @@ public class HarborComponent implements IsVueComponent, HasCreated, HasDestroyed
                 if (keyboardEvent.altKey && keyCode == 70) { // alt+f
                     evt.preventDefault();
 
-                    harborState.window = new CodeSearchWindow(null);
+                    harborState.window = CodeSearchWindow.create(null);
 
                     return;
                 }
@@ -192,13 +197,12 @@ public class HarborComponent implements IsVueComponent, HasCreated, HasDestroyed
             Monaco.setTheme(newDarkTheme ? "dark" : "light");
         });
 
-        if (initParameters.blob) {
-            repository.getCurrentBranch().getFile(initParameters.path).ifPresent(file -> {
-                sourceTabsSharedState.addSourceTab(file, initParameters.selection);
-            });
-        }
-
         window.addEventListener("resize", windowResizeListener = evt -> vue().$emit(WINDOW_RESIZED, evt));
+    }
+
+    @JsMethod
+    public void onShortcuts() {
+        harborState.window = Window.create("shortcuts");
     }
 
     @Override

@@ -2,73 +2,145 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>GitHarbor</title>
+    <title>GitHarbor: About</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/bootstrap.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
 
     <style>
-        h1 {
-            font-family: "Segoe UI", sans-serif;
+
+        body {
+            color: rgba(255, 255, 255, 0.9);
         }
 
-
         @media screen and (min-width: 1408px) {
-
-
-            .g-is-hello {
-                max-width: 1100px;
+            .container {
+                /*max-width: 1508px;*/
             }
         }
 
-        .g-has-border-radius {
+
+        .landing {
+            background: #151617 url("imgs/90(con).jpg") no-repeat;
+        }
+
+        .title {
+            color: rgba(255, 255, 255, 0.99);
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.70);
+            font-weight: 500;
+        }
+
+        .button {
+            color: rgba(255, 255, 255, 0.90) !important;
+            border-radius: 2px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.40);
+        }
+
+        .button a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.90) !important;
+        }
+
+        a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.90) !important;
+        }
+
+        .header {
+            padding: 20px;
+        }
+
+        .container-divider {
+            width: 20px;
+            height: 5px;
+            border-radius: 2px;
+            background: #EF6C00;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .has-borders {
+            border: 1px solid #4e4f53;
+        }
+
+        .has-borders.is-rounded {
             border-radius: 2px;
         }
 
-        .g-has-dark-borders {
-            border: 1px solid #4c4d53;
+        .is-rounded {
+            border-radius: 2px;
         }
 
-        .g-has-light-borders {
-            border: 1px solid #dddddd;
-        }
-
-        .g-has-light-color {
-            color: #b0b1b5;
-        }
-
-        .is-flex.is-centered {
-            justify-content: center;
-            align-items: center;
-        }
     </style>
+
 </head>
 
-
-<section class="hero is-medium">
-    <section>
-        <div class="container">
-            <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
-                <div class="navbar-brand">
-                    <a class="navbar-item title is-4">
-                        GitHarbor
-                    </a>
-                </div>
-
-                <div id="navbarBasicExample" class="navbar-menu">
-                    <div class="navbar-end">
-                        <a class="navbar-item">
-                            Support GitHarbor
-                        </a>
-                        <a class="navbar-item">
-                            About
-                        </a>
+<body>
+<section class="hero landing is-fullheight">
+    <div class="header">
+        <span class="is-pulled-right" style="font-size: 13px;">
+            <a href="index.html" style="margin-right: 30px;">Home</a>
+        </span>
+    </div>
+    <section class="hero is-halfheight">
+        <section class="hero-body">
+            <div class="container" style="margin-top: 5rem;">
+                <div class="columns">
+                    <div class="column is-7 has-text-left" style="padding-top: 8rem;">
+                        <div class="is-pulled-right">
+                            <div class="title" style="font-size: 2.5rem; margin-bottom: 1.8rem;">Who created?</div>
+                            <div class="subtitle" style="font-size: 1.25rem; margin-right: 3rem;">
+                                Hi, my name is Sasha and I am the creator of GitHarbor, <br> which is based on the stack - Vue-GWT / Javalin / Dagger2
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-5">
+                        <img src="imgs/1111111111.jpg" class="is-rounded">
                     </div>
                 </div>
-            </nav>
-        </div>
+            </div>
+        </section>
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container">
+                    <div class="container-divider"></div>
+                    <div class="title" style="font-size: 1.875rem;">Why I created GitHarbor</div>
+                    <div class="subtitle" style="font-size: 1.25rem">
+                        As a developer, I constantly need to read other people's sources, so I always have a lot of tabs open on GitHub. Each new tree file opens in a new tab, between tabs you need to constantly switch, look for the ones you need and close not relevant ones. And I would like simplicity and ease, as in your favorite development environment. So the first prototype of GitHarbor was born - a simple lazy tree and tabs, and then it started, screwed Java navigation, a file search appeared. There was an interesting service that could make life easier not only for me, but also for other developers.
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container">
+                    <div class="container-divider"></div>
+                    <div class="title" style="font-size: 1.875rem;">What is the GitHarbor about?</div>
+                    <div class="subtitle" style="font-size: 1.25rem">
+                        GitHarbor reminds Intellij IDEA, created specifically for this project. Using this service. With the help of GitHarbor, you can quickly navigate the repository using the tree and find the files you need, search for the code in the repository and subsequent opening, open several files at once in one tab in the log.
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container">
+                    <div class="container-divider"></div>
+                    <div class="title" style="font-size: 1.875rem;">Support</div>
+                    <div class="subtitle" style="font-size: 1.25rem; text-align: left">
+                        If you have ideas on how to improve the project, I will be glad to receive your feedback. You can contact me by e-mail <span style="color: rgba(255, 255, 255, 0.99);">bellski@githarbor.com</span>, as well as <a href="https://github.com/git-harbor/githabor/issues" class="icon"><i class="fab fa-github" style="color: rgba(255, 255, 255, 0.99);"></i></a>, I will also be glad to your donations, they will help to improve the project.
+                    </div>
+                </div>
+            </div>
+        </section>
     </section>
 </section>
-
+</body>
 
 </html>

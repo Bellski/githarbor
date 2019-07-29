@@ -57,7 +57,7 @@ public class FileContentRequest {
                 .map(result -> {
 
                     if (result.resource == null || result.resource.blob == null || result.resource.blob.text == null) {
-                        throw new RuntimeException();
+                        throw new RuntimeException("No text");
                     }
 
                     return result.resource.blob;

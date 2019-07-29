@@ -1,15 +1,23 @@
 package ru.githarbor.frontend.harbor.vue.harbor.window;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Window {
-    public final String name;
-    public final Object props;
 
-    public Window(String name) {
-        this(name, null);
-    }
+    public String name;
 
-    public Window(String name, Object props) {
-        this.name = name;
-        this.props = props;
+    public JsPropertyMap props;
+
+
+    @JsOverlay
+    public static Window create(String name) {
+        final Window window = new Window();
+        window.name = name;
+
+        return window;
     }
 }

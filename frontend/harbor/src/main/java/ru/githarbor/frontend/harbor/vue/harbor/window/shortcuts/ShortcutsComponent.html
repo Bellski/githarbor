@@ -1,0 +1,129 @@
+<el-dialog top="0"
+           :visible="true"
+           :modal="false"
+           class="el-is-shadowless el-is-has-borders is-height-80p is-flex-centered g-code-search el-is-no-header"
+           :show-close="false"
+           @close="onClose">
+
+    <simple-bar class="is-full-size">
+        <section class="g-shortcuts">
+            <h5 class="title is-5">Global</h5>
+            <table class="table is-bordered is-narrow is-fullwidth">
+                <colgroup>
+                    <col style="width: 70%;">
+                    <col style="width: 30%;">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Shortcut</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Search files</td>
+                    <td>ALT + N</td>
+                </tr>
+                <tr>
+                    <td>Search code. Scoped by repository</td>
+                    <td>ALT + F</td>
+                </tr>
+                <tr>
+                    <td>Focus "Search repository" input</td>
+                    <td>ALT + S</td>
+                </tr>
+                </tbody>
+            </table>
+            <h5 class="title is-5">Search repository input</h5>
+            <table class="table is-bordered is-narrow is-fullwidth">
+                <colgroup>
+                    <col style="width: 70%;">
+                    <col style="width: 30%;">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Shortcut</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Switch scope. <br>
+                        <ul>
+                            <li>
+                                Search repositories in Organization (Owner)
+                            </li>
+                            <li>
+                                Search in GitHub
+                            </li>
+                        </ul>
+                    </td>
+                    <td>ALT + S</td>
+                </tr>
+                </tbody>
+            </table>
+            <h5 class="title is-5">Repository tree</h5>
+            <table class="table is-bordered is-narrow is-fullwidth">
+                <colgroup>
+                    <col style="width: 70%;">
+                    <col style="width: 30%;">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Shortcut</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Focus repository tree</td>
+                    <td>ALT + T</td>
+                </tr>
+                <tr>
+                    <td>Navigate tree</td>
+                    <td>UP, DOWN, LEFT, RIGHT</td>
+                </tr>
+                <tr>
+                    <td>Open file or expand/collapse directory</td>
+                    <td>ENTER</td>
+                </tr>
+                <tr>
+                    <td>Copy name of file or directory</td>
+                    <td>CTRL + C</td>
+                </tr>
+                <tr>
+                    <td>Copy URL of file. For example you want to send URL to someone else</td>
+                    <td>ALT + C</td>
+                </tr>
+                <tr>
+                    <td>Search code in directory</td>
+                    <td>ALT + D</td>
+                </tr>
+                <tr>
+                    <td>Commit history of file or directory</td>
+                    <td>ALT + A</td>
+                </tr>
+                </tbody>
+            </table>
+            <h5 class="title is-5">Tabs</h5>
+            <table class="table is-bordered is-narrow is-fullwidth">
+                <colgroup>
+                    <col style="width: 70%;">
+                    <col style="width: 30%;">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Shortcut</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Close tab</td>
+                    <td>Mouse middle button</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </simple-bar>
+</el-dialog>

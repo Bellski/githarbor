@@ -63,6 +63,11 @@ public class HarborEntryPoint implements EntryPoint {
                 user.uiState.sideBarContentWidth = 80;
                 user.uiState.sideBarTabIndex = 1;
                 user.uiState.branches = new BranchState[] {branchState};
+            } else if (user.tier1Backer && user.uiState.getBranchState() == null) {
+                final BranchState branchState = new BranchState();
+                branchState.name = repository.getCurrentBranch().name;
+
+                user.uiState.addBranch(branchState);
             }
 
             final HarborDaggerComponent harborDaggerComponent = DaggerHarborDaggerComponent.builder()

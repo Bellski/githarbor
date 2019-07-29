@@ -22,6 +22,7 @@ import ru.githarbor.frontend.harbor.core.state.HarborState;
 import ru.githarbor.frontend.harbor.elementui.ElTree;
 import ru.githarbor.frontend.harbor.elementui.TreeNode;
 import ru.githarbor.frontend.harbor.elementui.TreeNodeResolver;
+import ru.githarbor.frontend.harbor.event.Events;
 import ru.githarbor.frontend.harbor.jslib.ClipBoard;
 import ru.githarbor.frontend.harbor.jslib.MyKeyboardEvent;
 import ru.githarbor.frontend.harbor.vue.component.menu.Action;
@@ -34,6 +35,7 @@ import ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.SourceTabsState;
 import ru.githarbor.frontend.harbor.vue.harbor.window.codesearch2.CodeSearchWindow;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.dir.DirectoryHistoryWindow;
 import ru.githarbor.frontend.harbor.vue.harbor.window.history.file.FileHistoryWindow;
+import ru.githarbor.frontend.vue.component.loader.LoaderComponent;
 import ru.githarbor.shared.BranchState;
 import ru.githarbor.shared.User;
 
@@ -48,7 +50,8 @@ import static elemental2.dom.DomGlobal.fetch;
 
 @Component(components = {
         BranchSelectComponent.class,
-        ContextMenuComponent.class
+        ContextMenuComponent.class,
+        LoaderComponent.class
 })
 public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasDestroyed {
 
@@ -98,21 +101,23 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
 
     @Override
     public void created() {
+        vue().$root().vue().$on(Events.GLOBAL_KEYDOWN, parameter -> {
+            final MyKeyboardEvent keyboardEvent = Js.cast(parameter);
+
+            if (keyboardEvent.ctrlKey) {
+                return;
+            }
+
+            if (keyboardEvent.altKey && keyboardEvent.getKeyCode() == 84) {
+                vue().$el().focus();
+            }
+        });
+
         contextMenuActions = new Action[] {
                 new Action("Copy", "Ctrl + C", this::copyTreeNodeNameToClipBoard),
-                new Action("Copy URL","Ctrl + Shift + C", this::copyFileUrlToClipBoard),
-                new Action("Search code", () -> {
-                    harborState.window = new CodeSearchWindow(treeComponent.getCurrentNode().key);
-                }),
-                new Action("History", () -> {
-                    if (treeComponent.getCurrentNode().leaf) {
-                        harborState.window = new FileHistoryWindow(treeComponent.getCurrentNode().key);
-
-                        return;
-                    }
-
-                    harborState.window = new DirectoryHistoryWindow(treeComponent.getCurrentNode().key);
-                })
+                new Action("Copy URL","Alt + C", this::copyFileUrlToClipBoard),
+                new Action("Search code", "Alt + D", this::openCodeSearch),
+                new Action("History", "Alt + A", this::openHistory)
         };
 
         repositoryTreeComponentApi.setApi(this);
@@ -175,6 +180,43 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
         final int keyCode = keyboardEvent.getKeyCode();
 
         final TreeNode<RepositoryTreeNode> treeNode = treeComponent.getNode(treeComponent.getCurrentKey());
+
+
+        if (keyboardEvent.altKey && keyboardEvent.getKeyCode() == 67) {
+            keyboardEvent.preventDefault();
+
+            if (treeNode.isLeaf) {
+                copyFileUrlToClipBoard();
+            }
+
+            return;
+        }
+
+        if (keyboardEvent.altKey) {
+            keyboardEvent.preventDefault();
+
+            if (keyboardEvent.getKeyCode() == 67) {
+                if (treeNode.isLeaf) {
+                    copyFileUrlToClipBoard();
+                }
+
+                return;
+            }
+
+            if (keyboardEvent.getKeyCode() == 68) {
+                if (!treeNode.isLeaf) {
+                    openCodeSearch();
+                }
+
+                return;
+            }
+
+            if (keyboardEvent.getKeyCode() == 65) {
+                openHistory();
+
+                return;
+            }
+        }
 
         switch (keyCode) {
             case 38: { //up
@@ -312,14 +354,8 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
             case 67: {
                 evt.preventDefault();
 
-                if (keyboardEvent.ctrlKey && treeComponent.getCurrentNode().leaf) {
+                if (keyboardEvent.ctrlKey && keyboardEvent.shiftKey) {
                     keyboardEvent.preventDefault();
-
-                    if (keyboardEvent.shiftKey) {
-                        copyFileUrlToClipBoard();
-
-                        return;
-                    }
 
                     copyTreeNodeNameToClipBoard();
                 }
@@ -413,37 +449,33 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
         vue().$nextTick(() -> {
             final Branch newBranch = repository.setCurrentBranch(branchName);
 
+            if (user.tier1Backer) {
+                user.uiState.currentBranch = branchName;
+            }
+
             if (newBranch.isResolved()) {
                 harborState.currentBranch = branchName;
 
                 currentTreeState = treeStateByBranch.get(branchName);
-
-                if (user.tier1Backer) {
-                    user.uiState.currentBranch = branchName;
-                }
 
                 resolvingBranch = false;
             } else {
                 newBranch.resolve(message -> {
                     switch (message) {
                         case "0":
-                            this.resolvingBranchProcessMessage = "Caching the new repository";
+                            this.resolvingBranchProcessMessage = "Cache new repository";
                             break;
-                        case "1":
-                            this.resolvingBranchProcessMessage = "Caching the new branch";
+                        case  "1":
+                            this.resolvingBranchProcessMessage = "Cache new branch";
                             break;
-                        case "2":
-                            this.resolvingBranchProcessMessage = "Updating the branch";
+                        case  "2":
+                            this.resolvingBranchProcessMessage = "Update branch";
                             break;
-                        case "3":
-                            this.resolvingBranchProcessMessage = "Caching the huge repository, please wait";
+                        case  "3":
+                            this.resolvingBranchProcessMessage = "Cache huge repository, it may take some time, but only once";
                             break;
                     }
                 }).subscribe(() -> {
-                    currentTreeState = treeStateByBranch.computeIfAbsent(branchName, key -> new TreeState());
-
-                    harborState.currentBranch = branchName;
-
                     if (user.tier1Backer) {
                         BranchState branchState = user.uiState.getBranchState();
 
@@ -453,8 +485,6 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
 
                             user.uiState.addBranch(branchState);
                         }
-
-                        user.uiState.currentBranch = branchName;
 
                         final String[] expandedNodes = user.uiState.getBranchState().expandedNodes;
                         final String selectedNode = user.uiState.getBranchState().selectedNode;
@@ -467,6 +497,10 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
                             defaultSelectKey = selectedNode;
                         }
                     }
+
+                    currentTreeState = treeStateByBranch.computeIfAbsent(branchName, key -> new TreeState());
+
+                    harborState.currentBranch = branchName;
 
                     resolvingBranch = false;
                 });
@@ -496,7 +530,7 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
     public void onFromSource() {
         final SourceTabsState currentState = sourceTabsSharedState.getCurrentState();
 
-        if (currentState != null) {
+        if (currentState != null && currentState.activeCodeTab != null) {
             revealKey(currentState.activeCodeTab);
         }
     }
@@ -517,6 +551,20 @@ public class RepositoryTreeComponent implements IsVueComponent, HasCreated, HasD
 
     public void copyFileUrlToClipBoard() {
         Copy.copyNodeUrl(repository, treeComponent.getCurrentNode());
+    }
+
+    private void openCodeSearch() {
+        harborState.window = CodeSearchWindow.create(treeComponent.getCurrentNode().key);
+    }
+
+    private void openHistory() {
+        if (treeComponent.getCurrentNode().leaf) {
+            harborState.window = FileHistoryWindow.create(treeComponent.getCurrentNode().key);
+
+            return;
+        }
+
+        harborState.window = DirectoryHistoryWindow.create(treeComponent.getCurrentNode().key);
     }
 
     @Override

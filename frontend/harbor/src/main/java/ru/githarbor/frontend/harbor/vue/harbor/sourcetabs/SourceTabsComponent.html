@@ -1,4 +1,5 @@
-<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.data.SourceTab"/>
+<vue-gwt:import class="ru.githarbor.frontend.harbor.vue.harbor.sourcetabs.data.SourceTab"
+                xmlns:vue-gwt="http://www.w3.org/1999/XSL/Transform" xmlns:vue-gwt="http://www.w3.org/2001/XMLSchema"/>
 <vue-gwt:import class="elemental2.dom.MouseEvent"/>
 
 <div class="is-full-height">
@@ -36,6 +37,7 @@
                 <svg-view v-if="isSvg(sourceTab)" :source="sourceTab"></svg-view>
                 <markdown-view v-if="isMarkdown(sourceTab)" :source="sourceTab"></markdown-view>
                 <java-source-view v-if="isJava(sourceTab)" :source="sourceTab"></java-source-view>
+                <go-source-view v-if="isGo(sourceTab)" :source="sourceTab"></go-source-view>
                 <source-view :source="sourceTab" v-else></source-view>
             </el-tab-pane>
         </el-tabs>
